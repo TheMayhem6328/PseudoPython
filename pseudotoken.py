@@ -8,6 +8,13 @@ import ply.lex as lex
 import datetime
 
 class Tokenizer:
+    # List of reserved words:
+    reserved = {
+        'if'    : 'IF',
+        'then'  : 'THEN',
+        'else'  : 'ELSE',
+        'while' : 'WHILE',
+    }
     # List of token names
     # In order of priority - highest ones first
     tokens = (
@@ -18,11 +25,18 @@ class Tokenizer:
        'CHAR',
        'STRING',
        'BOOLEAN',
+       # Logical Operators
+       'EQUALTO',
+       'GREATEQUAL',
+       'LESSEQUAL',
+       'LESS',
+       'GREAT',
        # Arithmetic Operators
        'PLUS',
        'MINUS',
        'TIMES',
        'DIVIDE',
+       'EQUAL',
        # Commands
        # Parenthesis
        'LPAREN1',
@@ -35,11 +49,19 @@ class Tokenizer:
        'SPACE',
     )
     
-    # Operators
+    # Logical Operators
+    t_EQUALTO    = r'\=\='
+    t_GREATEQUAL = r'\>\='
+    t_LESSEQUAL  = r'\<\='
+    t_LESS       = r'\<'
+    t_GREAT      = r'\>'
+    
+    # Arithmetic Operators
     t_PLUS    = r'\+'
     t_MINUS   = r'-'
     t_TIMES   = r'\*'
     t_DIVIDE  = r'/'
+    t_EQUAL   = r'\='
     
     # Parenthesis
     t_LPAREN1  = r'\('
