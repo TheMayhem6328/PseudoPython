@@ -19,6 +19,7 @@ class Tokenizer:
     # In order of priority - highest ones first
     tokens = (
        # Data types
+       'RANGE'
        'DATE',
        'REAL',
        'INTEGER',
@@ -37,7 +38,6 @@ class Tokenizer:
        'TIMES',
        'DIVIDE',
        'EQUAL',
-       # Commands
        # Parenthesis
        'LPAREN1',
        'RPAREN1',
@@ -74,6 +74,12 @@ class Tokenizer:
 
 
     # Data Types
+    def t_RANGE(t):
+        '\d+\ TO\ \d+'
+        value = t.value.split(" TO ")
+        t.value = range(int(value[0]), int(value[1]) + 1)
+        return t
+    
     def t_DATE(t):
         r'\d{2}/\d{2}/\d{4}'
         t.value = datetime.datetime(
