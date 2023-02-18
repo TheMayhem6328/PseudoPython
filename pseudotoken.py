@@ -5,36 +5,42 @@
 # numbers and +,-,*,/
 # ------------------------------------------------------------
 import ply.lex as lex
-
+import datetime
 
 class Tokenizer:
     # List of token names
     # In order of priority - highest ones first
     tokens = (
-        # Data types
+       # Data types
+       'DATE',
        'REAL',
        'INTEGER',
-        # Operators
+       'CHAR',
+       'STRING',
+       'BOOLEAN',
+       # Arithmetic Operators
        'PLUS',
        'MINUS',
        'TIMES',
        'DIVIDE',
-        # Parenthesis
+       # Commands
+       # Parenthesis
        'LPAREN1',
        'RPAREN1',
        'LPAREN2',
        'RPAREN2',
        'LPAREN3',
        'RPAREN3',
+       # Miscellaneous
+       'SPACE',
     )
-
-    # Regex for simpler tokens
     
     # Operators
     t_PLUS    = r'\+'
     t_MINUS   = r'-'
     t_TIMES   = r'\*'
     t_DIVIDE  = r'/'
+    
     # Parenthesis
     t_LPAREN1  = r'\('
     t_RPAREN1  = r'\)'
@@ -42,40 +48,69 @@ class Tokenizer:
     t_RPAREN2  = r'\}'
     t_LPAREN3  = r'\['
     t_RPAREN3  = r'\]'
+    t_SPACE    = r'\ '
 
-    # Real numbers
+
+    # Data Types
+    def t_DATE(t):
+        r'\d{2}/\d{2}/\d{4}'
+        t.value = datetime.datetime(
+            int(t.value[6:10]),
+            int(t.value[3:5]),
+            int(t.value[0:2])
+        )
+        return t
+        
     def t_REAL(t):
         r'\d+\.\d+'
         t.value = float(t.value)    
         return t
-    
-    # Integer values
+
     def t_INTEGER(t):
         r'\d+'
         t.value = int(t.value)    
         return t
+    
+    def t_CHAR(t):
+        r'\'.\''
+        t.value = str(t.value)
+        return t
+    
+    def t_STRING(t):
+        r'\".*\"'
+        t.value = str(t.value)
+        return t
+    
+    def t_BOOLEAN(t):
+        r'TRUE|FALSE'
+        if t.value == "TRUE":
+            t.value = bool(True)
+        elif t.value == "FALSE":
+            t.value = bool(False)
+        return t
+    
 
-    # Define a rule so we can track line numbers
+    # Track line numbers
     def t_newline(t):
         r'\n+'
         t.lexer.lineno += len(t.value)
 
-    # A string containing ignored characters (spaces and tabs)
-    t_ignore  = ' \t'
+    # Ignore these characters
+    t_ignore  = '\t'
 
-    # Error handling rule
+    # Error handler
     def t_error(t):
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
-    # Build the lexer
+    # Build lexer
     lexer = lex.lex()
 
-    # Test it out
+    # Tokenize
     def tokenize(filename : str, lexer : lex.Lexer = lexer) -> list[lex.LexToken]:
-        file = open(filename, "r")
-        data = file.read()
-
+        with open(filename, "r") as file:
+            data = file.read()
+        
         # Give the lexer some input
         lexer.input(data)
         
