@@ -2,3 +2,5 @@ __pycache__
 */__pycache__/*
 .dcignore
 .dccache
+._PseudoPython.code-workspace
+log*.txt
