@@ -1,53 +1,58 @@
 # ------------------------------------------------------------
 # pseudotoken.py
 #
-# tokenizer for a simple expression evaluator for
-# numbers and +,-,*,/
+# A WIP library for interpreting cambridge pseudocode
 # ------------------------------------------------------------
 import ply.lex as lex
 import datetime
 
 class Tokenizer:
     # List of reserved words:
-    reserved = {
-        'if'    : 'IF',
-        'then'  : 'THEN',
-        'else'  : 'ELSE',
-        'while' : 'WHILE',
-    }
+    reserved = [
+        'DECLARE',
+        'IF',
+        'THEN',
+        'ELSE',
+        'WHILE'
+    ]
+    
     # List of token names
     # In order of priority - highest ones first
-    tokens = (
-       # Data types
-       'RANGE'
-       'DATE',
-       'REAL',
-       'INTEGER',
-       'CHAR',
-       'STRING',
-       'BOOLEAN',
-       # Logical Operators
-       'EQUALTO',
-       'GREATEQUAL',
-       'LESSEQUAL',
-       'LESS',
-       'GREAT',
-       # Arithmetic Operators
-       'PLUS',
-       'MINUS',
-       'TIMES',
-       'DIVIDE',
-       'EQUAL',
-       # Parenthesis
-       'LPAREN1',
-       'RPAREN1',
-       'LPAREN2',
-       'RPAREN2',
-       'LPAREN3',
-       'RPAREN3',
-       # Miscellaneous
-       'SPACE',
-    )
+    tokens = [
+        # Miscellaneous
+        'COMMENT',
+        # Data types
+        'RANGE',
+        'DATE',
+        'REAL',
+        'INTEGER',
+        'CHAR',
+        'STRING',
+        'BOOLEAN',
+        # Logical Operators
+        'EQUALTO',
+        'GREATEQUAL',
+        'LESSEQUAL',
+        'LESS',
+        'GREAT',
+        # Arithmetic Operators
+        'PLUS',
+        'MINUS',
+        'TIMES',
+        'DIVIDE',
+        'EQUAL',
+        # Parenthesis
+        'LPAREN1',
+        'RPAREN1',
+        'LPAREN2',
+        'RPAREN2',
+        'LPAREN3',
+        'RPAREN3',
+        # Miscellaneous
+        'INDENT',
+        'SPACE',
+        'ID'
+     ] + reserved
     
     # Logical Operators
     t_EQUALTO    = r'\=\='
@@ -70,9 +75,12 @@ class Tokenizer:
     t_RPAREN2  = r'\}'
     t_LPAREN3  = r'\['
     t_RPAREN3  = r'\]'
-    t_SPACE    = r'\ '
-
-
+    
+    # Miscellaneous
+    t_COMMENT = r'\/\/.*'
+    t_INDENT  = r'[ ]{3,4}'
+    t_SPACE   = r'\ '
+    
     # Data Types
     def t_RANGE(t):
         '\d+\ TO\ \d+'
@@ -115,6 +123,13 @@ class Tokenizer:
             t.value = bool(True)
         elif t.value == "FALSE":
             t.value = bool(False)
+        return t
+    
+    # Reserved keywords + Identifiers
+    def t_ID(t):
+        r'[a-zA-Z_][a-zA-Z_0-9]*'
+        if Tokenizer.reserved.count(t.value) > 0:
+            t.type = t.value
         return t
     
 
