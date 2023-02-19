@@ -1,6 +1,15 @@
 3343 + 43 * 105
    + -20 *2 ([) {]}
 5.222 / 'H' 'l' "Hello" TRUE
-    FALSE 31/01/1212 = >= <= == > < = 1 TO 100
-IF ELSE ELSSE TRUE
-// This is chaotic
+    FALSE 31/01/1212 = >= <= == > < = <> 1 TO 100
+IF ELSE EL    SSE TRUE
+// This is cha    otic
+2 DIV 3 MOD 5
+INPUT OUTPUT, HIIIII : Hello
+CASE OF
+OTHERWISE
+ENDCASE
+IF THEN
+ELSE <-
+ENDIF
+Hello.world

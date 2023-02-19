@@ -1,0 +1,21 @@
+Reserved keywords:
+
+== Data Flow
+DECLARE
+
+== CASE Directive
+CASE
+OF
+OTHERWISE
+ENDCASE
+
+== IF Directive
+IF
+THEN
+ELSE
+ENDIF
+
+== I/O Keywords
+INPUT
+OUTPUT
+PRINT

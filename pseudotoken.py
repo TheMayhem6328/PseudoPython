@@ -9,11 +9,24 @@ import datetime
 class Tokenizer:
     # List of reserved words:
     reserved = [
+        # Data Flow
         'DECLARE',
+        'TYPE',
+        'ENDTYPE',
+        # CASE Directive
+        'CASE',
+        'OF',
+        'OTHERWISE',
+        'ENDCASE',
+        # IF Directive
         'IF',
         'THEN',
         'ELSE',
-        'WHILE'
+        'ENDIF',
+        # I/O Keywords
+        'INPUT',
+        'OUTPUT',
+        'PRINT'
     ]
     
     # List of token names
@@ -21,7 +34,8 @@ class Tokenizer:
     tokens = [
         # Miscellaneous
         'COMMENT',
-        # Data types
+        'ASSIGN',
+        # Data Types
         'RANGE',
         'DATE',
         'REAL',
@@ -31,6 +45,7 @@ class Tokenizer:
         'BOOLEAN',
         # Logical Operators
         'EQUALTO',
+        'NOTEQUALTO',
         'GREATEQUAL',
         'LESSEQUAL',
         'LESS',
@@ -40,6 +55,8 @@ class Tokenizer:
         'MINUS',
         'TIMES',
         'DIVIDE',
+        'DIVIDEINTEGER',
+        'MODULUS',
         'EQUAL',
         # Parenthesis
         'LPAREN1',
@@ -51,22 +68,28 @@ class Tokenizer:
         # Miscellaneous
         'INDENT',
         'SPACE',
+        'COMMA',
+        'COLON',
+        'DOT',
         'ID'
      ] + reserved
     
     # Logical Operators
     t_EQUALTO    = r'\=\='
+    t_NOTEQUALTO = r'\<\>'
     t_GREATEQUAL = r'\>\='
     t_LESSEQUAL  = r'\<\='
     t_LESS       = r'\<'
     t_GREAT      = r'\>'
     
     # Arithmetic Operators
-    t_PLUS    = r'\+'
-    t_MINUS   = r'-'
-    t_TIMES   = r'\*'
-    t_DIVIDE  = r'/'
-    t_EQUAL   = r'\='
+    t_PLUS          = r'\+'
+    t_MINUS         = r'-'
+    t_TIMES         = r'\*'
+    t_DIVIDE        = r'/'
+    t_DIVIDEINTEGER = r'[DIV]'
+    t_MODULUS       = r'[MOD]'
+    t_EQUAL         = r'\='
     
     # Parenthesis
     t_LPAREN1  = r'\('
@@ -77,8 +100,12 @@ class Tokenizer:
     t_RPAREN3  = r'\]'
     
     # Miscellaneous
+    t_ASSIGN  = r'\<\-'
     t_COMMENT = r'\/\/.*'
-    t_INDENT  = r'[ ]{3,4}'
+    t_DOT     = r'\.'
+    t_COMMA   = r'\,'
+    t_COLON   = r'\:'
+    t_INDENT  = r'\A[ ]{3,4}'
     t_SPACE   = r'\ '
     
     # Data Types
@@ -129,7 +156,10 @@ class Tokenizer:
     def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
         if Tokenizer.reserved.count(t.value) > 0:
-            t.type = t.value
+            if t.value == "PRINT" or t.value == "OUTPUT":
+                t.type == "OUTPUT"
+            else:
+                t.type = t.value
         return t
     
 
