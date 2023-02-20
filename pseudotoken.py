@@ -51,28 +51,14 @@ class Tokenizer:
         'LESS',
         'GREAT',
         # Arithmetic Operators
-        'PLUS',
-        'MINUS',
-        'TIMES',
-        'DIVIDE',
         'DIVIDEINTEGER',
         'MODULUS',
-        'EQUAL',
-        # Parenthesis
-        'LPAREN1',
-        'RPAREN1',
-        'LPAREN2',
-        'RPAREN2',
-        'LPAREN3',
-        'RPAREN3',
         # Miscellaneous
-        'INDENT',
-        'SPACE',
-        'COMMA',
-        'COLON',
-        'DOT',
         'ID'
      ] + reserved
+    
+    # Literal handling
+    literals = r"+-*/=(){}[],:. "
     
     # Logical Operators
     t_EQUALTO    = r'\=\='
@@ -83,30 +69,12 @@ class Tokenizer:
     t_GREAT      = r'\>'
     
     # Arithmetic Operators
-    t_PLUS          = r'\+'
-    t_MINUS         = r'-'
-    t_TIMES         = r'\*'
-    t_DIVIDE        = r'/'
     t_DIVIDEINTEGER = r'[DIV]'
     t_MODULUS       = r'[MOD]'
-    t_EQUAL         = r'\='
-    
-    # Parenthesis
-    t_LPAREN1  = r'\('
-    t_RPAREN1  = r'\)'
-    t_LPAREN2  = r'\{'
-    t_RPAREN2  = r'\}'
-    t_LPAREN3  = r'\['
-    t_RPAREN3  = r'\]'
     
     # Miscellaneous
     t_ASSIGN  = r'\<\-'
     t_COMMENT = r'\/\/.*'
-    t_DOT     = r'\.'
-    t_COMMA   = r'\,'
-    t_COLON   = r'\:'
-    t_INDENT  = r'\A[ ]{3,4}'
-    t_SPACE   = r'\ '
     
     # Data Types
     def t_RANGE(t):
