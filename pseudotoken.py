@@ -6,7 +6,7 @@
 import ply.lex as lex
 import datetime
 
-class Tokenizer:
+class Tokenizer(object):
     # List of reserved words:
     reserved = [
         # Data Flow
@@ -77,13 +77,13 @@ class Tokenizer:
     t_COMMENT = r'\/\/.*'
     
     # Data Types
-    def t_RANGE(t):
+    def t_RANGE(self, t):
         '\d+\ TO\ \d+'
         value = t.value.split(" TO ")
         t.value = range(int(value[0]), int(value[1]) + 1)
         return t
     
-    def t_DATE(t):
+    def t_DATE(self, t):
         r'\d{2}/\d{2}/\d{4}'
         t.value = datetime.datetime(
             int(t.value[6:10]),
@@ -92,27 +92,27 @@ class Tokenizer:
         )
         return t
         
-    def t_REAL(t):
+    def t_REAL(self, t):
         r'\d+\.\d+'
         t.value = float(t.value)    
         return t
 
-    def t_INTEGER(t):
+    def t_INTEGER(self, t):
         r'\d+'
         t.value = int(t.value)    
         return t
     
-    def t_CHAR(t):
+    def t_CHAR(self, t):
         r'\'.\''
         t.value = str(t.value)
         return t
     
-    def t_STRING(t):
+    def t_STRING(self, t):
         r'\".*\"'
         t.value = str(t.value)
         return t
     
-    def t_BOOLEAN(t):
+    def t_BOOLEAN(self, t):
         r'TRUE|FALSE'
         if t.value == "TRUE":
             t.value = bool(True)
@@ -121,7 +121,7 @@ class Tokenizer:
         return t
     
     # Reserved keywords + Identifiers
-    def t_ID(t):
+    def t_ID(self, t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
         if Tokenizer.reserved.count(t.value) > 0:
             if t.value == "PRINT" or t.value == "OUTPUT":
@@ -132,7 +132,7 @@ class Tokenizer:
     
 
     # Track line numbers
-    def t_newline(t):
+    def t_newline(self, t):
         r'\n+'
         t.lexer.lineno += len(t.value)
 
@@ -140,24 +140,25 @@ class Tokenizer:
     t_ignore  = '\t'
 
     # Error handler
-    def t_error(t):
+    def t_error(self, t):
         print("Illegal character '%s'" % t.value[0])
         t.lexer.skip(1)
 
     # Build lexer
-    lexer = lex.lex()
+    def build(self, **kwargs):
+        self.lexer = lex.lex(module=self, **kwargs)
 
     # Tokenize
-    def tokenize(filename : str, lexer : lex.Lexer = lexer) -> list[lex.LexToken]:
+    def tokenize(self, filename : str) -> list[lex.LexToken]:
         with open(filename, "r") as file:
             data = file.read()
         
         # Give the lexer some input
-        lexer.input(data)
+        self.lexer.input(data)
         
         # Tokenize
         tokens = []
-        for tok in lexer:
+        for tok in self.lexer:
             tokens.append(tok)
             
         return tokens
