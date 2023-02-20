@@ -13,6 +13,14 @@ class Tokenizer(object):
         'DECLARE',
         'TYPE',
         'ENDTYPE',
+        # Data Types
+        'RANGE',
+        'DATE',
+        'REAL',
+        'INTEGER',
+        'CHAR',
+        'STRING',
+        'BOOLEAN',
         # CASE Directive
         'CASE',
         'OF',
@@ -36,20 +44,20 @@ class Tokenizer(object):
         'COMMENT',
         'ASSIGN',
         # Data Types
-        'RANGE',
-        'DATE',
-        'REAL',
-        'INTEGER',
-        'CHAR',
-        'STRING',
-        'BOOLEAN',
+        'RANGETYPE',
+        'DATETYPE',
+        'REALTYPE',
+        'INTEGERTYPE',
+        'CHARTYPE',
+        'STRINGTYPE',
+        'BOOLEANTYPE',
         # Logical Operators
         'EQUALTO',
         'NOTEQUALTO',
         'GREATEQUAL',
         'LESSEQUAL',
-        'LESS',
         'GREAT',
+        'LESS',
         # Arithmetic Operators
         'DIVIDEINTEGER',
         'MODULUS',
@@ -77,13 +85,13 @@ class Tokenizer(object):
     t_COMMENT = r'\/\/.*'
     
     # Data Types
-    def t_RANGE(self, t):
+    def t_RANGETYPE(self, t):
         '\d+\ TO\ \d+'
         value = t.value.split(" TO ")
         t.value = range(int(value[0]), int(value[1]) + 1)
         return t
     
-    def t_DATE(self, t):
+    def t_DATETYPE(self, t):
         r'\d{2}/\d{2}/\d{4}'
         t.value = datetime.datetime(
             int(t.value[6:10]),
@@ -92,22 +100,22 @@ class Tokenizer(object):
         )
         return t
         
-    def t_REAL(self, t):
+    def t_REALTYPE(self, t):
         r'\d+\.\d+'
         t.value = float(t.value)    
         return t
 
-    def t_INTEGER(self, t):
+    def t_INTEGERTYPE(self, t):
         r'\d+'
         t.value = int(t.value)    
         return t
     
-    def t_CHAR(self, t):
+    def t_CHARTYPE(self, t):
         r'\'.\''
         t.value = str(t.value)
         return t
     
-    def t_STRING(self, t):
+    def t_STRINGTYPE(self, t):
         r'\".*\"'
         t.value = str(t.value)
         return t
