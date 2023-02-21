@@ -10,34 +10,77 @@ LetterLowercase ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
                   | "u" | "v" | "w" | "x" | "y" | "z" ;
 Letters         ::= LetterLowercase | LetterUppercase ;
 Digits          ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
-Symbols         ::= "+" | "-" | "*" | "/" | "=" | "(" | ")" | "{" | "}" | "["
+Special         ::= "+" | "-" | "*" | "/" | "=" | "(" | ")" | "{" | "}" | "["
                   | "]" | "," | ":" | "." | " " ;
 
 (* Miscellaneous *)
 Identifier      ::= Letters, { Letters | Digits | "_" } ;
 
 (* Data Types *)
-RANGETYPE       ::= { Digits } TO { Digits } ;
-DATETYPE        ::= Digits, Digits, "/", Digits, Digits,
+RangeType       ::= { Digits } TO { Digits } ;
+DateType        ::= Digits, Digits, "/", Digits, Digits,
                     "/", Digits, Digits, Digits, Digits ;
                     (* Basically DD/MM/YYYY *)
-REALTYPE        ::= { Digits }, ".", { Digits } ;
-INTEGERTYPE     ::= { Digits } ;
-CHARTYPE        ::= "'", ( Letters | Digits | Symbols ), "'" ;
-STRINGTYPE      ::= '"', { ( Letters | Digits | Symbols ) }, '"' ;
-BOOLEANTYPE     ::= "TRUE" | "FALSE" ;
+RealType        ::= { Digits }, ".", { Digits } ;
+IntegerType     ::= { Digits } ;
+CharType        ::= "'", ( Letters | Digits | Special ), "'" ;
+StringType      ::= '"', { Letters | Digits | Special }, '"' ;
+BooleanType     ::= "TRUE" | "FALSE" ;
+DataValue       ::= RangeType | DateType | RealType | IntegerType,
+                    CharType | StringType | BooleanType ;
 
-(* Logical Operators *)
-EQUALTO         ::= "==" ;
-NOTEQUALTO      ::= "<>" ;
-GREATEQUAL      ::= ">=" ;
-LESSEQUAL       ::= "<=" ;
-GREAT           ::= ">" ;
-LESS            ::= "<" ;
+(* Data Type Keywords *)
+Range           := "RANGE" ;
+Date            := "DATE" ;
+Real            := "REAL" ;
+Integer         := "INTEGER" ;
+Char            := "CHAR" ;
+String          := "STRING" ;
+Boolean         := "BOOLEAN" ;
+TypeKeyword     := Range | Date | Real | Integer | Char | String | Boolean ;
+
+(* Relational Operators *)
+EqualTo         ::= "==" ;
+NotEqualTo      ::= "<>" ;
+GreatEqual      ::= ">=" ;
+LessEqual       ::= "<=" ;
+Great           ::= ">" ;
+Less            ::= "<" ;
+LogicOperators  ::= EqualTo | NotEqualTo | GreatEqual | LessEqual
+                  | Great | Less | "=" ;
 
 (* Arithmetic Operators *)
-DIVIDEINTEGER   ::= "DIV" ;
+DivideInteger   ::= "DIV" ;
+Modulus         ::= "MOD" ;
+MathOperators   ::= "+" | "-" | "*" | "/" | DivideInteger | Modulus ;
 
 (* Miscellaneous *)
-ASSIGN          ::= "<-" ;
-COMMENT         ::= "//", { Letters | Digits | Symbols };
+Assign          ::= "<-" ;
+Comment         ::= "//", { Letters | Digits | Special };
+Indent          ::= ? 3 or 4 spaces per level of depth, at start of line ? ;
+NewLine         ::= ? A line break ? ;
+
+
+(*========== Statements ==========*)
+
+(* Data Flow *)
+Declare         := "DECLARE", " ", Identifier, " : ", ( TypeKeyword | CompositeType ) ;
+CompositeType   := "TYPE", " ", Identifier,
+                   { NewLine, Indent, Declare }, NewLine,
+                   "ENDTYPE";
+
+(* Conditional Selection *)
+CaseSelection   := "CASE OF", " ", Identifier,
+                   { Newline, Indent, DataValue, " : ", ? Statement ?,
+                   [ { NewLine, Indent, Indent, ? Statement ? } ] },
+                   [ Newline, Indent, "OTHWERWISE", " : ", ? Statement ?,
+                   [ { NewLine, Indent, Indent, ? Statement ? } ] ], NewLine,
+                   "ENDCASE" ;
+IfSelection     := "IF", " ", Identifier, " ", LogicOperators, " ", DataValue, " ", "THEN",
+                   { Newline, Indent, ? Statement ? }, NewLine,
+                   [ "ELSE", { Newline, Indent, ? Statement ? }, NewLine ],
+                   "ENDIF" ;
+
+(* I/O Directive *)
+Input           := "INPUT", " ", Identifier ;
+Output          := "OUTPUT", " ", ( DataValue | Identifier ), [ { ",", ( DataValue | Identifier ) } ];
