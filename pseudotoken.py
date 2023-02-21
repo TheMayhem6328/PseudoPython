@@ -3,7 +3,8 @@
 #
 # A WIP library for interpreting cambridge pseudocode
 # ------------------------------------------------------------
-import ply.lex as lex
+import ply.lex  as lex
+import ply.yacc as yacc
 import datetime
 
 class Tokenizer(object):
@@ -63,10 +64,10 @@ class Tokenizer(object):
         'MODULUS',
         # Miscellaneous
         'ID'
-     ] + reserved
+     ] + reserved + ["SPACE"]
     
     # Literal handling
-    literals = r"+-*/=(){}[],:. "
+    literals = r"+-*/=(){}[],:."
     
     # Logical Operators
     t_EQUALTO    = r'\=\='
@@ -83,6 +84,7 @@ class Tokenizer(object):
     # Miscellaneous
     t_ASSIGN  = r'\<\-'
     t_COMMENT = r'\/\/.*'
+    t_SPACE   = r'\ '
     
     # Data Types
     def t_RANGETYPE(self, t):
@@ -157,12 +159,13 @@ class Tokenizer(object):
         self.lexer = lex.lex(module=self, **kwargs)
 
     # Tokenize
-    def tokenize(self, filename : str) -> list[lex.LexToken]:
-        with open(filename, "r") as file:
-            data = file.read()
+    def tokenize(self, text : str = "", filename : str = "") -> list[lex.LexToken]:
+        if text == "" and filename != "":
+            with open(filename, "r") as file:
+                text = file.read()
         
         # Give the lexer some input
-        self.lexer.input(data)
+        self.lexer.input(text)
         
         # Tokenize
         tokens = []
@@ -170,3 +173,6 @@ class Tokenizer(object):
             tokens.append(tok)
             
         return tokens
+
+
+# Parser

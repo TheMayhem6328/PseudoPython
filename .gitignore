@@ -4,3 +4,4 @@ __pycache__
 .dccache
 ._PseudoPython.code-workspace
 log*.txt
+experiment
