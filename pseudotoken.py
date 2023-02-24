@@ -7,7 +7,7 @@ import ply.lex  as lex
 import ply.yacc as yacc
 import datetime
 
-class Tokenizer(object):
+class Tokenizer:
     # List of reserved words:
     reserved = [
         # Data Flow
@@ -35,7 +35,6 @@ class Tokenizer(object):
         # I/O Keywords
         'INPUT',
         'OUTPUT',
-        'PRINT'
     ]
     
     # List of token names
@@ -63,8 +62,12 @@ class Tokenizer(object):
         'DIVIDEINTEGER',
         'MODULUS',
         # Miscellaneous
-        'ID'
-     ] + reserved + ["SPACE"]
+        'INDENT',
+        'SPACE',
+        'ID'#,
+        # 'NEWLINE',
+        # 'EOF'
+     ] + reserved
     
     # Literal handling
     literals = r"+-*/=(){}[],:."
@@ -84,16 +87,22 @@ class Tokenizer(object):
     # Miscellaneous
     t_ASSIGN  = r'\<\-'
     t_COMMENT = r'\/\/.*'
-    t_SPACE   = r'\ '
+    
+    def t_INDENT(t):
+        r'\ \ \ |\ \ \ \ '
+        return t
+    
+    def t_SPACE(t):
+        r'\ '
     
     # Data Types
-    def t_RANGETYPE(self, t):
+    def t_RANGETYPE(t):
         '\d+\ TO\ \d+'
         value = t.value.split(" TO ")
         t.value = range(int(value[0]), int(value[1]) + 1)
         return t
     
-    def t_DATETYPE(self, t):
+    def t_DATETYPE(t):
         r'\d{2}/\d{2}/\d{4}'
         t.value = datetime.datetime(
             int(t.value[6:10]),
@@ -102,27 +111,27 @@ class Tokenizer(object):
         )
         return t
         
-    def t_REALTYPE(self, t):
+    def t_REALTYPE(t):
         r'\d+\.\d+'
         t.value = float(t.value)    
         return t
 
-    def t_INTEGERTYPE(self, t):
+    def t_INTEGERTYPE(t):
         r'\d+'
         t.value = int(t.value)    
         return t
     
-    def t_CHARTYPE(self, t):
+    def t_CHARTYPE(t):
         r'\'.\''
-        t.value = str(t.value)
+        t.value = str(t.value).replace("'", "")
         return t
     
-    def t_STRINGTYPE(self, t):
+    def t_STRINGTYPE(t):
         r'\".*\"'
-        t.value = str(t.value)
+        t.value = str(t.value).replace('"', '')
         return t
     
-    def t_BOOLEAN(self, t):
+    def t_BOOLEAN(t):
         r'TRUE|FALSE'
         if t.value == "TRUE":
             t.value = bool(True)
@@ -131,45 +140,44 @@ class Tokenizer(object):
         return t
     
     # Reserved keywords + Identifiers
-    def t_ID(self, t):
+    def t_ID(t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
-        if Tokenizer.reserved.count(t.value) > 0:
-            if t.value == "PRINT" or t.value == "OUTPUT":
-                t.type == "OUTPUT"
-            else:
-                t.type = t.value
+        if t.value == "PRINT" or t.value == "OUTPUT":
+            t.type = "OUTPUT"
+        elif Tokenizer.reserved.count(t.value) > 0:
+            t.type = t.value
         return t
     
-
     # Track line numbers
-    def t_newline(self, t):
+    def t_newline(t):
         r'\n+'
         t.lexer.lineno += len(t.value)
+        # t.type = "NEWLINE"
+        # return t
 
     # Ignore these characters
     t_ignore  = '\t'
 
     # Error handler
-    def t_error(self, t):
+    def t_error(t):
         print("Illegal character '%s'" % t.value[0])
-        t.lexer.skip(1)
-
+        t.lexer.skip(1) 
+    
     # Build lexer
-    def build(self, **kwargs):
-        self.lexer = lex.lex(module=self, **kwargs)
+    lexer = lex.lex()
 
     # Tokenize
-    def tokenize(self, text : str = "", filename : str = "") -> list[lex.LexToken]:
+    def tokenize(text : str = "", filename : str = "") -> list[lex.LexToken]:
         if text == "" and filename != "":
             with open(filename, "r") as file:
                 text = file.read()
         
         # Give the lexer some input
-        self.lexer.input(text)
+        Tokenizer.lexer.input(text)
         
         # Tokenize
         tokens = []
-        for tok in self.lexer:
+        for tok in Tokenizer.lexer:
             tokens.append(tok)
             
         return tokens
