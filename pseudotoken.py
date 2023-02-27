@@ -64,8 +64,8 @@ class Tokenizer:
         # Miscellaneous
         'INDENT',
         'SPACE',
-        'ID'#,
-        # 'NEWLINE',
+        'ID',
+        'NEWLINE'# ,
         # 'EOF'
      ] + reserved
     
@@ -150,10 +150,10 @@ class Tokenizer:
     
     # Track line numbers
     def t_newline(t):
-        r'\n+'
+        r'\n|\r|\r\n'
         t.lexer.lineno += len(t.value)
-        # t.type = "NEWLINE"
-        # return t
+        t.type = "NEWLINE"
+        return t
 
     # Ignore these characters
     t_ignore  = '\t'
