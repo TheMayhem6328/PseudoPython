@@ -59,14 +59,11 @@ def p_error(p):
     print(f"Syntax error in input! Token in context: {p}")
 
 parser = yacc.yacc()
-file = open("Main.mayudo")
-data = file.read()
-print(f"\n\nContent:\n==========\n[BEGIN FILE]\n{data}\n[END FILE]")
-print("\n\nTokens:\n==========")
-tokenList = list(Tokenizer.tokenize(filename = "Main.mayudo"))
-for token in tokenList: print(token)
-print("\nOutput:\n==========")
-parser.parse(data)
-print("\nTrace:\n==========")
-for traceElement in stackTrace: print(traceElement)
-print("\n")
+
+def parse(text : str = "", filename : str = "") -> list[str]:
+    if text == "" and filename != "":
+        with open(filename, "r") as file:
+            text = file.read()
+
+    parser.parse(text)
+    return stackTrace

@@ -1,9 +1,17 @@
 from pseudotoken import Tokenizer
+import pseudoyacc as Parser
 
-lexer = Tokenizer.lexer
+file = open("Main.mayudo")
+data = file.read()
 
-# tokenList = list(lexer.tokenize("PRINT 2 + 3"))
-tokenList = list(Tokenizer.tokenize(filename = "Main.mayudo"))
-for token in tokenList:
-    #print(f"Type: -|{token.type}|- ||| Line: {token.lineno} ||| Char: {token.lexpos} ||| Val : -|{token.value}|-")
-    print(token)
+print(f"\nContent:\n==========\n[BEGIN FILE]\n{data}\n[END FILE]")
+print("\nTokens:\n==========")
+tokenList = list(Tokenizer.tokenize(data))
+for token in tokenList: print(token)
+print("\nOutput:\n==========")
+stackTrace = Parser.parse(data)
+print("\nTrace:\n==========")
+for traceElement in stackTrace: print(traceElement)
+print("\n")
+
+file.close()
