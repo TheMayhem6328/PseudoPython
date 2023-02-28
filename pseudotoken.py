@@ -10,6 +10,9 @@ import datetime
 class Tokenizer:
     # List of reserved words:
     reserved = [
+        # Arithmetic Operators
+        'DIV',
+        'MOD',
         # Data Flow
         'DECLARE',
         'TYPE',
@@ -58,9 +61,6 @@ class Tokenizer:
         'LESSEQUAL',
         'GREAT',
         'LESS',
-        # Arithmetic Operators
-        'DIVIDEINTEGER',
-        'MODULUS',
         # Miscellaneous
         'INDENT',
         'SPACE',
@@ -79,10 +79,6 @@ class Tokenizer:
     t_LESSEQUAL  = r'\<\='
     t_LESS       = r'\<'
     t_GREAT      = r'\>'
-    
-    # Arithmetic Operators
-    t_DIVIDEINTEGER = r'[DIV]'
-    t_MODULUS       = r'[MOD]'
     
     # Miscellaneous
     t_ASSIGN  = r'\<\-'
