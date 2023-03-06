@@ -122,12 +122,12 @@ class Tokenizer:
     
     def t_CHARTYPE(t):
         r'\'.\''
-        t.value = str(t.value).replace("'", "")
+        t.value = str(t.value)
         return t
     
     def t_STRINGTYPE(t):
         r'\".*\"'
-        t.value = str(t.value).replace('"', '')
+        t.value = str(t.value)
         return t
     
     def t_BOOLEAN(t):

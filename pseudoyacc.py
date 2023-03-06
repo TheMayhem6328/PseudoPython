@@ -4,10 +4,13 @@ from utils import *
 import inspect
 tokens = Tokenizer.tokens
 lexer = Tokenizer.lexer
+stackTrace = []
 
-variableState = dict(TestVariable = "Unchanged")
-stackTrace    = []
-
+def p_statements(p):
+    """statements : assign
+                  | print"""
+    stackTrace.append(inspect.stack()[0][3])
+    
 def p_assign(p):
     """assign : ID ASSIGN expr
               | ID ASSIGN datatypes"""
@@ -19,7 +22,7 @@ def p_print(p):
              | OUTPUT datatypes"""
     stackTrace.append(inspect.stack()[0][3])
     if type(p[2]) == str:
-        print(f"print(\"{escapedString(p[2])}\")")
+        print(f"print({escapedString(p[2])})")
 
 # Arithmetic Operations
 def p_expr_arithmetic(p):
