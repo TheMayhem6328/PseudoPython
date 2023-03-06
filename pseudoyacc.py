@@ -26,7 +26,9 @@ def p_expr_arithmetic(p):
     """expr : expr '+' expr
             | expr '-' expr
             | expr '*' expr
-            | expr '/' expr"""
+            | expr '/' expr
+            | expr DIV expr
+            | expr MOD expr"""
     stackTrace.append(inspect.stack()[0][3])
     if p[2] == '+':
         p[0] = p[1] + p[3]
@@ -36,6 +38,10 @@ def p_expr_arithmetic(p):
         p[0] = p[1] * p[3]
     elif p[2] == '/':
         p[0] = p[1] / p[3]
+    elif p[2] == 'DIV':
+        p[0] = p[1] // p[3]
+    elif p[2] == 'MOD':
+        p[0] = p[1] % p[3]
 
 def p_expr_num(p):
     """expr : INTEGERTYPE
