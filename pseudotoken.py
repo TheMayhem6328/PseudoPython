@@ -62,7 +62,7 @@ class Tokenizer:
         'DIVIDEINTEGER',
         'MODULUS',
         # Miscellaneous
-        'INDENT',
+        # 'INDENT',
         'SPACE',
         'ID',
         'NEWLINE'# ,
@@ -85,12 +85,15 @@ class Tokenizer:
     t_MODULUS       = r'[MOD]'
     
     # Miscellaneous
-    t_ASSIGN  = r'\<\-'
     t_COMMENT = r'\/\/.*'
     
-    def t_INDENT(t):
-        r'\ \ \ |\ \ \ \ '
+    def t_ASSIGN(t):
+        r'\<\-'
         return t
+    
+    # def t_INDENT(t):
+    #     r'\ \ \ |\ \ \ \ '
+    #     return t
     
     def t_SPACE(t):
         r'\ '
