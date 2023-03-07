@@ -2,16 +2,16 @@ from pseudotoken import Tokenizer
 import pseudoyacc as Parser
 
 file = open("Main.mayudo")
-data = file.read()
+data = file.readlines()
 
-print(f"\nContent:\n==========\n[BEGIN FILE]\n{data}\n[END FILE]")
-print("\nTokens:\n==========")
-tokenList = list(Tokenizer.tokenize(data))
-for token in tokenList: print(token)
-print("\nOutput:\n==========")
-stackTrace = Parser.parse(data)
-print("\nTrace:\n==========")
-for traceElement in stackTrace: print(traceElement)
-print("\n")
+for line in range(len(data)):
+    data[line] = data[line].removesuffix("\n")
 
-file.close()
+for line in data:
+    parse = Parser.parse(line)
+print("Converted to python code:")
+print("=========================")
+print("[BEGIN PYTHON CODE]")
+for line in parse[0]:
+    print(line)
+print("[END  PYTHON  CODE]")

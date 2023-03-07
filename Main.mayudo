@@ -1,1 +1,3 @@
-Hello <- "Hi"
+X <- 5 MOD (2 + 6)
+// Hello world
+OUTPUT X

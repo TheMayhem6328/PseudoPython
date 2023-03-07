@@ -5,24 +5,32 @@ import inspect
 tokens = Tokenizer.tokens
 lexer = Tokenizer.lexer
 stackTrace = []
+parseLines = []
 
-def p_statements(p):
-    """statements : assign
-                  | print"""
+def p_root(p):
+    """root : comment
+            | assign
+            | print"""
     stackTrace.append(inspect.stack()[0][3])
+
+def p_comment(p):
+    """comment : COMMENT"""
+    stackTrace.append(inspect.stack()[0][3])
+    parseLines.append(f"#{str(escapedString(p[1])).removeprefix('//')}")
     
 def p_assign(p):
     """assign : ID ASSIGN expr
               | ID ASSIGN datatypes"""
     stackTrace.append(inspect.stack()[0][3])
-    print(f"{p[1]} = {p[3]}")
+    parseLines.append(f"{p[1]} = {p[3]}")
 
 def p_print(p):
     """print : OUTPUT expr
+             | OUTPUT ID
              | OUTPUT datatypes"""
     stackTrace.append(inspect.stack()[0][3])
     if type(p[2]) == str:
-        print(f"print({escapedString(p[2])})")
+        parseLines.append(f"print({escapedString(p[2])})")
 
 # Arithmetic Operations
 def p_expr_arithmetic(p):
@@ -71,10 +79,6 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-def parse(text : str = "", filename : str = "") -> list[str]:
-    if text == "" and filename != "":
-        with open(filename, "r") as file:
-            text = file.read()
-
+def parse(text : str = "") -> tuple[list, list]:
     parser.parse(text)
-    return stackTrace
+    return (parseLines, stackTrace)

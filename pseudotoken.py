@@ -151,8 +151,8 @@ class Tokenizer:
     def t_newline(t):
         r'\n|\r|\r\n'
         t.lexer.lineno += len(t.value)
-        t.type = "NEWLINE"
-        return t
+        # t.type = "NEWLINE"
+        # return t
 
     # Ignore these characters
     t_ignore  = '\t'
