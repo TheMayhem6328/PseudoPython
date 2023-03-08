@@ -15,10 +15,7 @@ class Tokenizer:
         'MOD',
         # Data Flow
         'DECLARE',
-        'TYPE',
-        'ENDTYPE',
         # Data Types
-        'RANGE',
         'DATE',
         'REAL',
         'INTEGER',
@@ -26,11 +23,6 @@ class Tokenizer:
         'STRING',
         'BOOLEAN',
         'CONSTANT',
-        # CASE Directive
-        'CASE',
-        'OF',
-        'OTHERWISE',
-        'ENDCASE',
         # IF Directive
         'IF',
         'THEN',
@@ -40,6 +32,12 @@ class Tokenizer:
         'FOR',
         'NEXT',
         'ENDFOR',
+        # WHILE Directive
+        'WHILE',
+        'ENDWHILE',
+        # REPEAT-UNTIL Directive
+        'REPEAT',
+        'UNTIL',
         # I/O Keywords
         'INPUT',
         'OUTPUT',
@@ -67,11 +65,7 @@ class Tokenizer:
         'GREAT',
         'LESS',
         # Miscellaneous
-        # 'INDENT',
-        'SPACE',
-        'ID',
-        'NEWLINE'# ,
-        # 'EOF'
+        'ID'
      ] + reserved
     
     # Literal handling

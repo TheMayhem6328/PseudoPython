@@ -69,8 +69,12 @@ def p_endif(p):
 # == Loops
 
 def p_loop(p):
-    """loop : for"""
+    """loop : for
+            | while
+            | repeatuntil"""
     addTrace(inspect.stack()[0][3])
+
+# For loops
 
 def p_for(p):
     """for : forstart
@@ -88,6 +92,44 @@ def p_endfor(p):
               | NEXT ID"""
     addTrace(inspect.stack()[0][3])
     decrementDepth()
+
+# While loops
+
+def p_while(p):
+    """while : whilestart
+             | endwhile"""
+    addTrace(inspect.stack()[0][3])
+    
+def p_whilestat(p):
+    """whilestart : WHILE boolexpr"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"while {p[2]}:")
+    incrementDepth()
+
+def p_endwhile(p):
+    """endwhile : ENDWHILE"""
+    addTrace(inspect.stack()[0][3])
+    decrementDepth()
+
+# Repeat-Until loops
+
+def p_repeatuntil(p):
+    """repeatuntil : repeat
+                   | until"""
+    addTrace(inspect.stack()[0][3])
+
+def p_repeat(p):
+    """repeat : REPEAT"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"while True:")
+    incrementDepth()
+
+def p_until(p):
+    """until : UNTIL boolexpr"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"if {p[2]}: break")
+    decrementDepth()
+
 
 # == Data flow
 
@@ -170,7 +212,8 @@ def p_expr_operands(p):
 # Boolean expression terms
 def p_boolexpr_terms(p):
     """boolexpr : BOOLEANTYPE
-                | ID"""
+                | ID
+                | expr"""
     addTrace(inspect.stack()[0][3])
     p[0] = p[1]
 

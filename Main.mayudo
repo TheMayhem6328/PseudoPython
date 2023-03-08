@@ -34,3 +34,13 @@ FOR X <- 1 TO 20
     X <- 5 + X
     OUTPUT X
 ENDFOR
+
+WHILE X > 3
+    X <- "Test"
+    OUTPUT X
+ENDWHILE
+
+REPEAT
+    X <- "Test"
+    OUTPUT X
+UNTIL X > 3
