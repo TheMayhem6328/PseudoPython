@@ -15,6 +15,7 @@ def p_root(p):
     """root : comment
             | assign
             | declare
+            | constant
             | input
             | output"""
     stackTrace.append(inspect.stack()[0][3])
@@ -39,6 +40,12 @@ def p_declare(p):
     elif p[4] == "STRING"  : addLine(f"{p[2]} = str()")
     elif p[4] == "BOOLEAN" : addLine(f"{p[2]} = bool()")
 
+# Constant assignment
+def p_constant(p):
+    """constant : CONSTANT ID '=' datatypes"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"{p[2]} = {p[4]} # Constant")
+
 # Assign statements
 def p_assign(p):
     """assign : ID ASSIGN expr
@@ -62,7 +69,7 @@ def p_output(p):
     addTrace(inspect.stack()[0][3])
     addLine(f"print({p[2]})")
 
-# == Miscellaneous
+# == Arithmetic expressions
 
 # Arithmetic Operations
 def p_expr_arithmetic(p):
@@ -119,6 +126,7 @@ def p_expr_group(p):
 def p_error(p):
     addTrace(inspect.stack()[0][3])
     if p == None:
+        stackTrace[-1] += " (Blank line)"
         addLine("")
     else:
         print(f"Syntax error in input! Token in context: {p}")

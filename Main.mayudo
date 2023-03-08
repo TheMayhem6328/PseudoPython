@@ -1,5 +1,8 @@
 // This is a test
 DECLARE X : INTEGER
+DECLARE Y : STRING
+
+CONSTANT Y = "Hi"
 
 INPUT X
 X <- X + 3 + (2 * X)

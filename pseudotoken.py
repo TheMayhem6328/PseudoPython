@@ -25,6 +25,7 @@ class Tokenizer:
         'CHAR',
         'STRING',
         'BOOLEAN',
+        'CONSTANT',
         # CASE Directive
         'CASE',
         'OF',

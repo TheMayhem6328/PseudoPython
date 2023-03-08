@@ -26,12 +26,15 @@ print("--[END  PYTHON  CODE]--\n\n")
 
 print("Stack Trace:")
 print("==============")
-rootCount = 0
-for trace in range(len(parse[1])):
-    element = parse[1][-(trace+1)]
-    if element == "p_root":
-        if rootCount > 0:
-            print("")
-        rootCount += 1
-        print(f"Line {rootCount + 1}:")
-    print(element)
+count = 0
+lineTrace = []
+newTrace  = []
+for trace in parse[1]:
+    print(trace)
+    """
+    if trace == "p_root":
+        print("=LINE=")
+        for element in range(len(lineTrace)):
+            newTrace.append(newTrace[-(element+1)])
+    lineTrace.append(trace)
+    """
