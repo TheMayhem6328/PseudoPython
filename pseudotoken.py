@@ -36,6 +36,10 @@ class Tokenizer:
         'THEN',
         'ELSE',
         'ENDIF',
+        # FOR Directive
+        'FOR',
+        'NEXT',
+        'ENDFOR',
         # I/O Keywords
         'INPUT',
         'OUTPUT',

@@ -23,3 +23,14 @@ IF X > B
     ELSE
         x <- 5
 ENDIF
+
+FOR X <- 1 TO 20
+    X <- 5 MOD (2 + 6 DIV (3 + 5))
+    OUTPUT X
+NEXT X
+
+FOR X <- 1 TO 20
+    INPUT X
+    X <- 5 + X
+    OUTPUT X
+ENDFOR

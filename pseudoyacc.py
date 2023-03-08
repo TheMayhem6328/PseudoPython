@@ -16,9 +16,7 @@ def decrementDepth(depth : int = 1): global indentCount ;indentCount -= 4 * dept
 def p_root(p):
     """root : comment
             | if
-            | then
-            | else
-            | endif
+            | loop
             | assign
             | declare
             | constant
@@ -39,8 +37,14 @@ def p_comment(p):
 # == Conditional selection
 
 def p_if(p):
-    """if : IF boolexpr THEN
-          | IF boolexpr"""
+    """if : ifstart
+          | then
+          | else
+          | endif"""
+
+def p_ifstart(p):
+    """ifstart : IF boolexpr THEN
+               | IF boolexpr"""
     addTrace(inspect.stack()[0][3])
     addLine(f"if {p[2]}:")
     incrementDepth()
@@ -58,6 +62,30 @@ def p_else(p):
 
 def p_endif(p):
     """endif : ENDIF"""
+    addTrace(inspect.stack()[0][3])
+    decrementDepth()
+
+
+# == Loops
+
+def p_loop(p):
+    """loop : for"""
+    addTrace(inspect.stack()[0][3])
+
+def p_for(p):
+    """for : forstart
+           | endfor"""
+    addTrace(inspect.stack()[0][3])
+
+def p_forstart(p):
+    """forstart : FOR ID ASSIGN RANGETYPE"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"for {p[2]} in {p[4]}")
+    incrementDepth()
+
+def p_endfor(p):
+    """endfor : ENDFOR
+              | NEXT ID"""
     addTrace(inspect.stack()[0][3])
     decrementDepth()
 
