@@ -9,10 +9,16 @@ parseLines = []
 indentCount = 0
 def addLine(text: str) : parseLines.append(" "*indentCount +  text)
 def addTrace(text: str): stackTrace.append(text)
+def incrementDepth(depth : int = 1): global indentCount ;indentCount += 4 * depth
+def decrementDepth(depth : int = 1): global indentCount ;indentCount -= 4 * depth
 
 # Starting rule
 def p_root(p):
     """root : comment
+            | if
+            | then
+            | else
+            | endif
             | assign
             | declare
             | constant
@@ -21,13 +27,41 @@ def p_root(p):
     stackTrace.append(inspect.stack()[0][3])
 
 
-# == Statement handling
+# == Miscellaneous
 
 # Comment parsing
 def p_comment(p):
     """comment : COMMENT"""
     addTrace(inspect.stack()[0][3])
-    addLine(f"#{str(escapedString(p[1])).removeprefix('//')}")
+    addLine(f"#{str(p[1]).removeprefix('//')}")
+
+
+# == Conditional selection
+
+def p_if(p):
+    """if : IF boolexpr THEN
+          | IF boolexpr"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"if {p[2]}:")
+    incrementDepth()
+
+def p_then(p):
+    """then : THEN"""
+    addTrace(inspect.stack()[0][3])
+
+def p_else(p):
+    """else : ELSE"""
+    addTrace(inspect.stack()[0][3])
+    decrementDepth()
+    addLine("else:")
+    incrementDepth()
+
+def p_endif(p):
+    """endif : ENDIF"""
+    addTrace(inspect.stack()[0][3])
+    decrementDepth()
+
+# == Data flow
 
 # Declaration statements
 def p_declare(p):
@@ -42,13 +76,14 @@ def p_declare(p):
 
 # Constant assignment
 def p_constant(p):
-    """constant : CONSTANT ID '=' datatypes"""
+    """constant : CONSTANT ID EQUALTO datatypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"{p[2]} = {p[4]} # Constant")
 
 # Assign statements
 def p_assign(p):
     """assign : ID ASSIGN expr
+              | ID ASSIGN boolexpr
               | ID ASSIGN datatypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"{p[1]} = {p[3]}")
@@ -64,15 +99,31 @@ def p_input(p):
 # Output statements
 def p_output(p):
     """output : OUTPUT expr
+              | OUTPUT boolexpr
               | OUTPUT ID
               | OUTPUT datatypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"print({p[2]})")
 
-# == Arithmetic expressions
+
+# == Operand parsing
+
+# Booleans Operations
+def p_boolexpr_operands(p):
+    """boolexpr : boolexpr EQUALTO boolexpr
+                | boolexpr NOTEQUALTO boolexpr
+                | boolexpr GREATEQUAL boolexpr
+                | boolexpr LESSEQUAL boolexpr
+                | boolexpr GREAT boolexpr
+                | boolexpr LESS boolexpr"""
+    addTrace(inspect.stack()[0][3])
+    if   p[2] == "="  : operator = "=="
+    elif p[2] == "<>" : operator = "!="
+    else            : operator = p[2]
+    p[0] = f"{p[1]} {operator} {p[3]}"
 
 # Arithmetic Operations
-def p_expr_arithmetic(p):
+def p_expr_operands(p):
     """expr : expr '+' expr
             | expr '-' expr
             | expr '*' expr
@@ -86,10 +137,17 @@ def p_expr_arithmetic(p):
     p[0] = f"{p[1]} {operator} {p[3]}"
 
 
-# == Basic type handling
+# == Data type handling
 
-# Expression terms
-def p_expr_num(p):
+# Boolean expression terms
+def p_boolexpr_terms(p):
+    """boolexpr : BOOLEANTYPE
+                | ID"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = p[1]
+
+# Arithmetic expression terms
+def p_expr_terms(p):
     """expr : INTEGERTYPE
             | REALTYPE
             | ID"""
@@ -100,8 +158,7 @@ def p_expr_num(p):
 def p_datatypes(p):
     """datatypes : STRINGTYPE
                  | CHARTYPE
-                 | DATETYPE
-                 | BOOLEANTYPE"""
+                 | DATETYPE"""
     addTrace(inspect.stack()[0][3])
     p[0] = p[1]
 
@@ -119,6 +176,12 @@ def p_typenames(p):
 # Braket support for expressions
 def p_expr_group(p):
     """expr : '(' expr ')'"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"({p[2]})"
+
+# Braket support for boolean expressions
+def p_boolexpr_group(p):
+    """boolexpr : '(' boolexpr ')'"""
     addTrace(inspect.stack()[0][3])
     p[0] = f"({p[2]})"
 

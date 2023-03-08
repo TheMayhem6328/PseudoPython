@@ -71,10 +71,10 @@ class Tokenizer:
      ] + reserved
     
     # Literal handling
-    literals = r"+-*/=(){}[],:."
+    literals = r"+-*/(){}[],:."
     
     # Logical Operators
-    t_EQUALTO    = r'\=\='
+    t_EQUALTO    = r'\='
     t_NOTEQUALTO = r'\<\>'
     t_GREATEQUAL = r'\>\='
     t_LESSEQUAL  = r'\<\='
