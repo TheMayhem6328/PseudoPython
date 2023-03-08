@@ -180,6 +180,3 @@ class Tokenizer:
             tokens.append(tok)
             
         return tokens
-
-
-# Parser

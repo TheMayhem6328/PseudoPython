@@ -8,5 +8,3 @@ def escapedString(string : str) -> str:
         elif string[pos] == "\\" : newString += "\\\\"
         else: newString += string[pos]
     return newString
-
-print(escapedString("""Hello"d'Hiii\n\t"""))
