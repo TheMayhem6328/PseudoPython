@@ -1,6 +1,5 @@
 import ply.yacc as yacc
 from pseudotoken import Tokenizer
-from utils import *
 import inspect
 tokens = Tokenizer.tokens
 lexer = Tokenizer.lexer
@@ -17,12 +16,14 @@ def p_root(p):
     """root : comment
             | if
             | loop
-            | assign
             | declare
+            | assign
+            | fileops
             | constant
             | input
             | output"""
     stackTrace.append(inspect.stack()[0][3])
+
 
 
 # == Miscellaneous
@@ -34,7 +35,11 @@ def p_comment(p):
     addLine(f"#{str(p[1]).removeprefix('//')}")
 
 
+
 # == Conditional selection
+
+
+# If...else...endif statements
 
 def p_if(p):
     """if : ifstart
@@ -66,13 +71,16 @@ def p_endif(p):
     decrementDepth()
 
 
+
 # == Loops
 
+# Catch-all loop handling
 def p_loop(p):
     """loop : for
             | while
             | repeatuntil"""
     addTrace(inspect.stack()[0][3])
+
 
 # For loops
 
@@ -93,6 +101,7 @@ def p_endfor(p):
     addTrace(inspect.stack()[0][3])
     decrementDepth()
 
+
 # While loops
 
 def p_while(p):
@@ -110,6 +119,7 @@ def p_endwhile(p):
     """endwhile : ENDWHILE"""
     addTrace(inspect.stack()[0][3])
     decrementDepth()
+
 
 # Repeat-Until loops
 
@@ -129,6 +139,7 @@ def p_until(p):
     addTrace(inspect.stack()[0][3])
     addLine(f"if {p[2]}: break")
     decrementDepth()
+
 
 
 # == Data flow
@@ -159,8 +170,60 @@ def p_assign(p):
     addLine(f"{p[1]} = {p[3]}")
 
 
+
 # == I/O
 
+# File operations
+
+def p_fileops(p):
+    """fileops : openfile
+               | readfile
+               | writefile
+               | closefile"""
+    addTrace(inspect.stack()[0][3])
+
+def p_openfile(p):
+    """openfile : OPENFILE fileid FOR filemodes"""
+    addTrace(inspect.stack()[0][3])
+    for modeTranslate in [["READ", "rt"], ["WRITE", "wt"], ["APPEND", "at"]]:
+        if p[4] == modeTranslate[0]: mode = modeTranslate[1]
+    utilLine = "fileDict = dict() # Utility dictionary, from transpiler"
+    try : parseLines.index(utilLine)
+    except ValueError : addLine(utilLine)
+    braceBound = bb = ["{", "}"]
+    addLine(f"fileDict.update({bb[0]}{p[2]}: open({p[2]}, '{mode}'){bb[1]})")
+
+def p_readfile(p):
+    """readfile : READFILE fileid ',' ID"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"{p[4]} = fileDict[{p[2]}].readline()")    
+
+def p_writefile(p):
+    """writefile : WRITEFILE fileid ',' boolexpr
+                 | WRITEFILE fileid ',' expr
+                 | WRITEFILE fileid ',' ID
+                 | WRITEFILE fileid ',' datatypes"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"fileDict[{p[2]}].write(str({p[4]}) + '\\n')")
+
+def p_closefile(p):
+    """closefile : CLOSEFILE fileid"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"fileDict[{p[2]}].close()")
+
+def p_filemappings(p):
+    """filemodes : READ
+                 | WRITE
+                 | APPEND
+    fileid : STRINGTYPE
+           | ID"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = p[1]
+
+
+# Console operations
+
+# Input statements
 def p_input(p):
     """input : INPUT ID"""
     addTrace(inspect.stack()[0][3])
@@ -174,6 +237,7 @@ def p_output(p):
               | OUTPUT datatypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"print({p[2]})")
+
 
 
 # == Operand parsing
@@ -205,6 +269,7 @@ def p_expr_operands(p):
     elif p[2] == "MOD": operator = "%"
     else              : operator = p[2]
     p[0] = f"{p[1]} {operator} {p[3]}"
+
 
 
 # == Data type handling
@@ -265,6 +330,8 @@ def p_error(p):
     else:
         print(f"Syntax error in input! Token in context: {p}")
         addLine(f"#=== ERROR PARSING {p} ===#")
+
+
 
 # Build parser
 parser = yacc.yacc()

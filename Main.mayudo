@@ -1,8 +1,10 @@
 // This is a test
 DECLARE X : INTEGER
 DECLARE Y : STRING
+DECLARE Z : STRING
 
 CONSTANT Y = "Hi"
+CONSTANT Z = "Hi.txt"
 
 INPUT X
 X <- X + 3 + (2 * X)
@@ -44,3 +46,9 @@ REPEAT
     X <- "Test"
     OUTPUT X
 UNTIL X > 3
+
+OPENFILE "Hello.txt" FOR READ
+OPENFILE z FOR WRITE
+READFILE "Hello.txt", x
+WRITEFILE z, "Hello World"
+CLOSEFILE Z

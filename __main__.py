@@ -33,7 +33,7 @@ for trace in parse[1]:
     print(trace)
     """
     if trace == "p_root":
-        print("=LINE=")
+        print("==LINE==")
         for element in range(len(lineTrace)):
             newTrace.append(newTrace[-(element+1)])
     lineTrace.append(trace)
