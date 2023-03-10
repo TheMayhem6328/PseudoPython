@@ -492,6 +492,7 @@ def p_error(p):
 parser = yacc.yacc()
 
 # Function to parse given string
+
 def parse(text : str = "") -> tuple[list, list]:
     """Parses parameter string and transpiles pseudocode to python.
     Returns a tuple with list of parsed lines and another list with stack trace
@@ -504,9 +505,3 @@ def parse(text : str = "") -> tuple[list, list]:
     - `parseLines` (list): A list with transpiled python lines"""
     parser.parse(text)
     return (parseLines, stackTrace)
-
-def addThree(x : int | float = 2):
-    return x + 3
-
-addThree()
-addThree(4)
