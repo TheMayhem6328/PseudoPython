@@ -1,15 +1,31 @@
+# Import handling
 import ply.yacc as yacc
 from pseudotoken import Tokenizer
 import inspect
+
+# Initialize necessary values
 tokens = Tokenizer.tokens
 lexer = Tokenizer.lexer
 stackTrace = []
 parseLines = []
 indentCount = 0
-def addLine(text: str) : parseLines.append(" "*indentCount +  text)
-def addTrace(text: str): stackTrace.append(text)
-def incrementDepth(depth : int = 1): global indentCount ;indentCount += 4 * depth
-def decrementDepth(depth : int = 1): global indentCount ;indentCount -= 4 * depth
+
+# Define utility functions
+def addLine(text: str):
+    parseLines.append(" "*indentCount +  text)
+def addTrace(text: str):
+    stackTrace.append(text)
+def incrementDepth(depth : int = 1):
+    global indentCount
+    indentCount += 4 * depth
+def decrementDepth(depth : int = 1):
+    global indentCount
+    indentCount -= 4 * depth
+def addLineIfNotFound(utilLine : str):
+    try:
+        parseLines.index(utilLine)
+    except ValueError:
+        addLine(utilLine)
 
 # Starting rule
 def p_root(p):
@@ -17,6 +33,7 @@ def p_root(p):
             | if
             | loop
             | declare
+            | subroutine
             | assign
             | fileops
             | constant
@@ -148,7 +165,9 @@ def p_until(p):
 def p_declare(p):
     """declare : DECLARE ID ':' typenames"""
     addTrace(inspect.stack()[0][3])
-    if   p[4] == "DATE"    : addLine(f"{p[2]} = datetime.datetime(1970, 1, 1)")
+    if   p[4] == "DATE":
+        addLineIfNotFound("import datetime")
+        addLine(f"{p[2]} = datetime.datetime(1970, 1, 1)")
     elif p[4] == "REAL"    : addLine(f"{p[2]} = float()")
     elif p[4] == "INTEGER" : addLine(f"{p[2]} = int()")
     elif p[4] == "CHAR"    : addLine(f"{p[2]} = str() # Should be char")
@@ -171,6 +190,140 @@ def p_assign(p):
 
 
 
+# == Subroutines
+
+def p_subroutine(p):
+    """subroutine : procedure
+                  | function"""
+    addTrace(inspect.stack()[0][3])
+
+
+# Procedures
+
+def p_procedure(p):
+    """procedure : startprocedure
+                 | endprocedure
+                 | call"""
+    addTrace(inspect.stack()[0][3])
+
+def p_startprocedure_paramfree(p):
+    """startprocedure : PROCEDURE ID '(' ')'"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"def {p[2]}():")
+    incrementDepth()
+
+def p_startprocedure_paramed(p):
+    """startprocedure : PROCEDURE ID '(' paramdef ')'"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"def {p[2]}({p[4]}):")
+    incrementDepth()
+
+def p_endprocedure(p):
+    """endprocedure : ENDPROCEDURE"""
+    addTrace(inspect.stack()[0][3])
+    decrementDepth()
+
+def p_call_paramfree(p):
+    """call : CALL ID"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"{p[2]}()")
+
+def p_call_paramed(p):
+    """call : CALL ID '(' paramfeed ')'"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"{p[2]}({p[4]})")
+
+
+# Functions
+
+def p_function(p):
+    """function : startfunc
+                | return
+                | endfunc"""
+    addTrace(inspect.stack()[0][3])
+
+def p_startfunc_paramfree(p):
+    """startfunc : FUNCTION ID '(' ')' RETURNS typenames"""
+    addTrace(inspect.stack()[0][3])
+    dataType = ""
+    if   p[6] == "DATE":
+        addLineIfNotFound("import datetime")
+        dataType = "datetime.date"
+    elif p[6] == "REAL"    : dataType = "float"
+    elif p[6] == "INTEGER" : dataType = "int"
+    elif p[6] == "CHAR"    : dataType = "str"
+    elif p[6] == "STRING"  : dataType = "str"
+    elif p[6] == "BOOLEAN" : dataType = "bool"
+    addLine(f"def {p[2]}() -> {dataType}:")
+    incrementDepth()
+
+def p_startfunc_paramed(p):
+    """startfunc : FUNCTION ID '(' paramdef ')' RETURNS typenames"""
+    addTrace(inspect.stack()[0][3])
+    dataType = ""
+    if   p[7] == "DATE":
+        addLineIfNotFound("import datetime")
+        dataType = "datetime.date"
+    elif p[7] == "REAL"    : dataType = "float"
+    elif p[7] == "INTEGER" : dataType = "int"
+    elif p[7] == "CHAR"    : dataType = "str"
+    elif p[7] == "STRING"  : dataType = "str"
+    elif p[7] == "BOOLEAN" : dataType = "bool"
+    addLine(f"def {p[2]}({p[4]}) -> {dataType}:")
+    incrementDepth()
+
+def p_return(p):
+    """return : RETURN expr
+              | RETURN boolexpr
+              | RETURN ID
+              | RETURN datatypes"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"return {p[2]}")
+
+def p_endfunc(p):
+    """endfunc : ENDFUNCTION"""
+    addTrace(inspect.stack()[0][3])
+    decrementDepth()
+
+
+# Parameter flow parsing
+
+def p_paramdef_recursion(p):
+    """paramdef : paramdef ',' paramdef"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]}, {p[3]}"
+
+def p_paramdef_init(p):
+    """paramdef : ID ':' typenames"""
+    addTrace(inspect.stack()[0][3])
+    dataType = ""
+    if   p[3] == "DATE":
+        utilLine = "import datetime"
+        try : parseLines.index(utilLine)
+        except ValueError : addLine(utilLine)
+        dataType = "datetime.date"
+    elif p[3] == "REAL"    : dataType = "float"
+    elif p[3] == "INTEGER" : dataType = "int"
+    elif p[3] == "CHAR"    : dataType = "str"
+    elif p[3] == "STRING"  : dataType = "str"
+    elif p[3] == "BOOLEAN" : dataType = "bool"
+    p[0] = f"{p[1]} : {dataType}"
+
+def p_paramfeed_recursion(p):
+    """paramfeed : paramfeed ',' paramfeed"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]}, {p[3]}"
+
+def p_paramfeed_init(p):
+    """paramfeed : expr
+                 | boolexpr
+                 | ID
+                 | datatypes"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = str(p[1])
+
+
+
 # == I/O
 
 # File operations
@@ -187,10 +340,8 @@ def p_openfile(p):
     addTrace(inspect.stack()[0][3])
     for modeTranslate in [["READ", "rt"], ["WRITE", "wt"], ["APPEND", "at"]]:
         if p[4] == modeTranslate[0]: mode = modeTranslate[1]
-    utilLine = "fileDict = dict() # Utility dictionary, from transpiler"
-    try : parseLines.index(utilLine)
-    except ValueError : addLine(utilLine)
-    braceBound = bb = ["{", "}"]
+    addLineIfNotFound("fileDict = dict() # Utility dictionary, from transpiler")
+    bb = ["{", "}"]
     addLine(f"fileDict.update({bb[0]}{p[2]}: open({p[2]}, '{mode}'){bb[1]})")
 
 def p_readfile(p):
@@ -349,3 +500,9 @@ def parse(text : str = "") -> tuple[list, list]:
     - `parseLines` (list): A list with transpiled python lines"""
     parser.parse(text)
     return (parseLines, stackTrace)
+
+def addThree(x : int | float = 2):
+    return x + 3
+
+addThree()
+addThree(4)

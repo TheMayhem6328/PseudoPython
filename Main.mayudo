@@ -52,3 +52,18 @@ OPENFILE z FOR WRITE
 READFILE "Hello.txt", x
 WRITEFILE z, "Hello World"
 CLOSEFILE Z
+
+PROCEDURE HelloKitty(X : STRING, Y : INTEGER,Z:REAL)
+    X <- "Test"
+    OUTPUT X
+    CALL DoMiscellaneousStuff
+    CALL Hello(2, 3, 7, 9)
+ENDPROCEDURE
+
+FUNCTION HelloKitty(X : STRING, Y : INTEGER,Z:REAL) RETURNS STRING
+    X <- "Test"
+    OUTPUT X
+    CALL DoMiscellaneousStuff
+    CALL Hello(2, 3, 7, 9)
+    RETURN 3
+ENDFUNCTION

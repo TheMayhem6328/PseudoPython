@@ -30,7 +30,7 @@ count = 0
 lineTrace = []
 newTrace  = []
 for trace in parse[1]:
-    print(trace)
+    # print(trace)
     """
     if trace == "p_root":
         print("==LINE==")

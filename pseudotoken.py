@@ -38,6 +38,15 @@ class Tokenizer:
         # REPEAT-UNTIL Directive
         'REPEAT',
         'UNTIL',
+        # PROCEDURE Directive
+        'PROCEDURE',
+        'ENDPROCEDURE',
+        'CALL',
+        # FUNCTION Directive
+        'FUNCTION',
+        'RETURNS',
+        'RETURN',
+        'ENDFUNCTION',
         # File Operation Keywords
         'OPENFILE',
         'READ',
@@ -46,7 +55,7 @@ class Tokenizer:
         'READFILE',
         'WRITEFILE',
         'CLOSEFILE',
-        # I/O Keywords
+         # I/O Keywords
         'INPUT',
         'OUTPUT',
     ]
