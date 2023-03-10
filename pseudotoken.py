@@ -41,6 +41,7 @@ class Tokenizer:
         # PROCEDURE Directive
         'PROCEDURE',
         'BYREF',
+        'BYVAL',
         'ENDPROCEDURE',
         'CALL',
         # FUNCTION Directive
