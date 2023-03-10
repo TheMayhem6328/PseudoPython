@@ -40,6 +40,7 @@ class Tokenizer:
         'UNTIL',
         # PROCEDURE Directive
         'PROCEDURE',
+        'BYREF',
         'ENDPROCEDURE',
         'CALL',
         # FUNCTION Directive

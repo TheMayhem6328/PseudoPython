@@ -293,6 +293,10 @@ def p_paramdef_recursion(p):
     addTrace(inspect.stack()[0][3])
     p[0] = f"{p[1]}, {p[3]}"
 
+def p_paramdef_byref(p):
+    """paramdef : BYREF paramdef"""
+    p[0] = f"{p[1]}, {p[3]}"
+
 def p_paramdef_init(p):
     """paramdef : ID ':' typenames"""
     addTrace(inspect.stack()[0][3])
