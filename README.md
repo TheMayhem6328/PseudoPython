@@ -7,7 +7,7 @@ This is a transpiler for translating Cambridge's definition of pseudocode (which
 ## Installation
 
 To install, simply clone the repository, open the resulting the directory in a terminal session and run [\_\_main\_\_.py](__main__.py).  
-To edit the source pseudocode, simply edit [Main.mayudo](main.mayudo), enter your pseudocode there and save it. Then run [\_\_main\_\_.py](__main__.py) again. Further simplification en-route.
+To edit the source pseudocode, simply edit [Main.mayudo](Main.mayudo), enter your pseudocode there and save it. Then run [\_\_main\_\_.py](__main__.py) again. Further simplification en-route.
 
 ## Rationale
 
