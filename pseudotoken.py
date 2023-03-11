@@ -102,7 +102,7 @@ class Tokenizer:
     t_COMMENT = r'\/\/.*'
     
     def t_ASSIGN(t):
-        r'\<\-'
+        r'\<\-|←'
         return t
     
     # def t_INDENT(t):

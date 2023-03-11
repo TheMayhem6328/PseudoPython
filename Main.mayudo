@@ -26,8 +26,8 @@ IF X > B
         x <- 5
 ENDIF
 
-FOR X <- 1 TO 20
-    X <- 5 MOD (2 + 6 DIV (3 + 5))
+FOR X ← 1 TO 20
+    X ← 5 MOD (2 + 6 DIV (3 + 5))
     OUTPUT X
 NEXT X
 
@@ -61,7 +61,7 @@ PROCEDURE HelloKitty(X : STRING, Y : INTEGER,Z:REAL)
 ENDPROCEDURE
 
 FUNCTION HelloKitty(BYREF X : STRING, BYVAL Y : INTEGER,Z:REAL) RETURNS STRING
-    X <- "Test"
+    X ← "Test"
     OUTPUT X
     CALL DoMiscellaneousStuff
     CALL Hello(2, 3, 7, 9)
