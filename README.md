@@ -102,10 +102,10 @@ So far, here's a checklist of what's complete and what's not:
     - [X] `<=` Less than or equal to
     - [X] `=` Equal to
     - [X] `<>` Not equal to
-  - [ ] **5.4** || Logic operations
-    - [ ] AND
-    - [ ] OR
-    - [ ] NOT
+  - [X] **5.4** || Logic operations
+    - [X] AND
+    - [X] OR
+    - [X] NOT
   - [ ] **5.5** || String functions and operations
     - [ ] String functions
       - [ ] `RIGHT(ThisString : STRING, x : INTEGER) RETURNS STRING`

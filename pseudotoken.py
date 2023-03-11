@@ -13,6 +13,10 @@ class Tokenizer:
         # Arithmetic Operators
         'DIV',
         'MOD',
+        # Boolean Operators
+        'AND',
+        'OR',
+        'NOT',
         # Data Flow
         'DECLARE',
         # Data Types

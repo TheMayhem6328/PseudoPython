@@ -399,7 +399,8 @@ def p_output(p):
 # == Operand parsing
 
 # Booleans Operations
-def p_boolexpr_operands(p):
+
+def p_boolexpr_operators_relational(p):
     """boolexpr : boolexpr EQUALTO boolexpr
                 | boolexpr NOTEQUALTO boolexpr
                 | boolexpr GREATEQUAL boolexpr
@@ -411,6 +412,23 @@ def p_boolexpr_operands(p):
     elif p[2] == "<>" : operator = "!="
     else            : operator = p[2]
     p[0] = f"{p[1]} {operator} {p[3]}"
+
+def p_boolexpr_operators_logical_and_or(p):
+    """boolexpr : boolexpr AND boolexpr
+                | boolexpr OR boolexpr"""
+    addTrace(inspect.stack()[0][3])
+    if   p[2] == "AND": p[0] = f"{p[1]} and {p[3]}"
+    elif p[2] == "OR" : p[0] = f"{p[1]} or {p[3]}"
+
+def p_boolexpr_operators_logical_not_01(p):
+    """boolexpr : boolexpr NOT '(' boolexpr ')'"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]} not ({p[4]})"
+
+def p_boolexpr_operators_logical_not_02(p):
+    """boolexpr : NOT '(' boolexpr ')'"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"not ({p[3]})"
 
 # Arithmetic Operations
 def p_expr_operands(p):

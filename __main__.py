@@ -24,17 +24,21 @@ for line in parse[0]:
     print(line)
 print("--[END  PYTHON  CODE]--\n\n")
 
-print("Stack Trace:")
-print("==============")
-count = 0
-lineTrace = []
-newTrace  = []
-for trace in parse[1]:
-    # print(trace)
-    """
-    if trace == "p_root":
-        print("==LINE==")
-        for element in range(len(lineTrace)):
-            newTrace.append(newTrace[-(element+1)])
-    lineTrace.append(trace)
-    """
+def stackTrace():
+    print("Stack Trace:")
+    print("==============")
+    count = 0
+    lineTrace = []
+    newTrace  = []
+    for trace in parse[1]:
+        print(trace)
+        """
+        if trace == "p_root":
+            print("==LINE==")
+            for element in range(len(lineTrace)):
+                newTrace.append(newTrace[-(element+1)])
+        lineTrace.append(trace)
+        """
+
+# Uncomment below line to print out trace
+# stackTrace()
