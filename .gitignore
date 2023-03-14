@@ -1,7 +1,14 @@
+# Python cache
 __pycache__
 */__pycache__/*
+log*.txt
+
+# DeepCode
 .dcignore
 .dccache
-._PseudoPython.code-workspace
-log*.txt
+
+# Personal Junk
 experiment
+
+# MacOS forks
+._*

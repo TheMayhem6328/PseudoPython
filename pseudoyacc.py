@@ -239,7 +239,8 @@ def p_call_paramed(p):
 def p_function(p):
     """function : startfunc
                 | return
-                | endfunc"""
+                | endfunc
+                | inlinecall"""
     addTrace(inspect.stack()[0][3])
 
 def p_startfunc_paramfree(p):
@@ -285,6 +286,16 @@ def p_endfunc(p):
     addTrace(inspect.stack()[0][3])
     decrementDepth()
 
+def p_inlinecall_paramfree(p):
+    """inlinecall : ID '('  ')'"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]}()"
+
+def p_inlinecall_paramed(p):
+    """inlinecall : ID '(' paramfeed ')'"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]}({p[3]})"
+
 
 # Parameter flow parsing
 
@@ -323,7 +334,8 @@ def p_paramfeed_init(p):
     """paramfeed : expr
                  | boolexpr
                  | ID
-                 | datatypes"""
+                 | datatypes
+                 | inlinecall"""
     addTrace(inspect.stack()[0][3])
     p[0] = str(p[1])
 
@@ -452,6 +464,7 @@ def p_expr_operands(p):
 def p_boolexpr_terms(p):
     """boolexpr : BOOLEANTYPE
                 | ID
+                | BOOLEAN
                 | expr"""
     addTrace(inspect.stack()[0][3])
     p[0] = p[1]
@@ -460,7 +473,8 @@ def p_boolexpr_terms(p):
 def p_expr_terms(p):
     """expr : INTEGERTYPE
             | REALTYPE
-            | ID"""
+            | ID
+            | inlinecall"""
     addTrace(inspect.stack()[0][3])
     p[0] = p[1]
 
