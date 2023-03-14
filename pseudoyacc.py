@@ -221,9 +221,9 @@ def p_constant(p):
 
 # Assign statements
 def p_assign(p):
-    """assign : ID ASSIGN expr
-              | ID ASSIGN boolexpr
-              | ID ASSIGN datatypes"""
+    """assign : symref ASSIGN expr
+              | symref ASSIGN boolexpr
+              | symref ASSIGN datatypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"{p[1]} = {p[3]}")
 
@@ -372,7 +372,7 @@ def p_paramfeed_recursion(p):
 def p_paramfeed_init(p):
     """paramfeed : expr
                  | boolexpr
-                 | ID
+                 | symref
                  | datatypes
                  | inlinecall"""
     addTrace(inspect.stack()[0][3])
@@ -401,14 +401,14 @@ def p_openfile(p):
     addLine(f"fileDict.update({bb[0]}{p[2]}: open({p[2]}, '{mode}'){bb[1]})")
 
 def p_readfile(p):
-    """readfile : READFILE fileid ',' ID"""
+    """readfile : READFILE fileid ',' symref"""
     addTrace(inspect.stack()[0][3])
     addLine(f"{p[4]} = fileDict[{p[2]}].readline()")    
 
 def p_writefile(p):
     """writefile : WRITEFILE fileid ',' boolexpr
                  | WRITEFILE fileid ',' expr
-                 | WRITEFILE fileid ',' ID
+                 | WRITEFILE fileid ',' symref
                  | WRITEFILE fileid ',' datatypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"fileDict[{p[2]}].write(str({p[4]}) + '\\n')")
@@ -423,7 +423,7 @@ def p_filemappings(p):
                  | WRITE
                  | APPEND
     fileid : STRINGTYPE
-           | ID"""
+           | symref"""
     addTrace(inspect.stack()[0][3])
     p[0] = p[1]
 
@@ -432,7 +432,7 @@ def p_filemappings(p):
 
 # Input statements
 def p_input(p):
-    """input : INPUT ID"""
+    """input : INPUT symref"""
     addTrace(inspect.stack()[0][3])
     addLine(f"{p[2]} = input()")
 
@@ -440,7 +440,7 @@ def p_input(p):
 def p_output(p):
     """output : OUTPUT expr
               | OUTPUT boolexpr
-              | OUTPUT ID
+              | OUTPUT symref
               | OUTPUT datatypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"print({p[2]})")
@@ -502,7 +502,7 @@ def p_expr_operands(p):
 # Boolean expression terms
 def p_boolexpr_terms(p):
     """boolexpr : BOOLEANTYPE
-                | ID
+                | symref
                 | BOOLEAN
                 | expr"""
     addTrace(inspect.stack()[0][3])
@@ -512,7 +512,7 @@ def p_boolexpr_terms(p):
 def p_expr_terms(p):
     """expr : INTEGERTYPE
             | REALTYPE
-            | ID
+            | symref
             | inlinecall"""
     addTrace(inspect.stack()[0][3])
     p[0] = p[1]
@@ -547,6 +547,23 @@ def p_boolexpr_group(p):
     """boolexpr : '(' boolexpr ')'"""
     addTrace(inspect.stack()[0][3])
     p[0] = f"({p[2]})"
+
+# Identifier resolution
+def p_symref(p):
+    """symref : arrayref
+              | ID"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = p[1]
+
+def p_arrayref_2D(p):
+    """arrayref : ID '[' INTEGERTYPE ',' INTEGERTYPE ']'"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]}[{p[3]}][{p[5]}]"
+
+def p_arrayref_1D(p):
+    """arrayref : ID '[' INTEGERTYPE ']'"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]}[{p[3]}]"
 
 # Error handling
 def p_error(p):

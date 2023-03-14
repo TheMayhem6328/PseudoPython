@@ -68,15 +68,15 @@ So far, here's a checklist of what's complete and what's not:
     - [X] Operator variants
       - [X] `<-`
       - [X] `←`
-- [ ] **3** || Arrays
+- [X] **3** || Arrays
   - [X] **3.1** || Declaring arrays
     - [X] Declaration
       - [X] One-Dimensional
       - [X] Two-Dimensional
-  - [ ] **3.2** || Using arrays
-    - [ ] Index reference
-      - [ ] One-Dimensional
-      - [ ] Two-Dimensional
+  - [X] **3.2** || Using arrays
+    - [X] Index reference
+      - [X] One-Dimensional
+      - [X] Two-Dimensional
 - [ ] **4** || User-defined data types
   - [ ] **4.1** || Defining user-defined
     - [ ] Non-composite data types
