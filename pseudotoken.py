@@ -10,6 +10,9 @@ import datetime
 class Tokenizer:
     # List of reserved words:
     reserved = [
+        # Array Keywords
+        'ARRAY',
+        'OF',
         # Arithmetic Operators
         'DIV',
         'MOD',
@@ -27,28 +30,28 @@ class Tokenizer:
         'STRING',
         'BOOLEAN',
         'CONSTANT',
-        # IF Directive
+        # IF Definition
         'IF',
         'THEN',
         'ELSE',
         'ENDIF',
-        # FOR Directive
+        # FOR Definition
         'FOR',
         'NEXT',
         'ENDFOR',
-        # WHILE Directive
+        # WHILE Definition
         'WHILE',
         'ENDWHILE',
-        # REPEAT-UNTIL Directive
+        # REPEAT-UNTIL Definition
         'REPEAT',
         'UNTIL',
-        # PROCEDURE Directive
+        # PROCEDURE Definition
         'PROCEDURE',
         'BYREF',
         'BYVAL',
         'ENDPROCEDURE',
         'CALL',
-        # FUNCTION Directive
+        # FUNCTION Definition
         'FUNCTION',
         'RETURNS',
         'RETURN',

@@ -163,16 +163,55 @@ def p_until(p):
 
 # Declaration statements
 def p_declare(p):
-    """declare : DECLARE ID ':' typenames"""
+    """declare : declarearr
+               | declarevar"""
+
+# 2D Arrays
+def p_declarearr_2D(p):
+    """declarearr : DECLARE ID ':' ARRAY '[' INTEGERTYPE ':' INTEGERTYPE ',' INTEGERTYPE ':' INTEGERTYPE ']' OF typenames"""
     addTrace(inspect.stack()[0][3])
+    declarationType = ""
+    countRow = int(p[8])  - (int(p[6])  - 1)
+    countCol = int(p[12]) - (int(p[10]) - 1)
+    if   p[15] == "DATE":
+        addLineIfNotFound("import datetime")
+        declarationType = f"[[datetime.datetime(1970, 1, 1)] * {countCol}] * {countRow}"
+    elif p[15] == "REAL"    : declarationType = f"[[float()] * {countCol}] * {countRow}"
+    elif p[15] == "INTEGER" : declarationType = f"[[int()] * {countCol}] * {countRow}"
+    elif p[15] == "CHAR"    : declarationType = f"[[str()] * {countCol}] * {countRow} # Should be char"
+    elif p[15] == "STRING"  : declarationType = f"[[str()] * {countCol}] * {countRow}"
+    elif p[15] == "BOOLEAN" : declarationType = f"[[bool()] * {countCol}] * {countRow}"
+    addLine(f"{p[2]} = {declarationType}")
+
+# 1D Arrays
+def p_declarearr_1D(p):
+    """declarearr : DECLARE ID ':' ARRAY '[' INTEGERTYPE ':' INTEGERTYPE ']' OF typenames"""
+    addTrace(inspect.stack()[0][3])
+    declarationType = ""
+    count = int(p[8]) - (int(p[6]) - 1)
+    if   p[11] == "DATE":
+        addLineIfNotFound("import datetime")
+        declarationType = f"[datetime.datetime(1970, 1, 1)] * {count}"
+    elif p[11] == "REAL"    : declarationType = f"[float()] * {count}"
+    elif p[11] == "INTEGER" : declarationType = f"[int()] * {count}"
+    elif p[11] == "CHAR"    : declarationType = f"[str()] * {count} # Should be char"
+    elif p[11] == "STRING"  : declarationType = f"[str()] * {count}"
+    elif p[11] == "BOOLEAN" : declarationType = f"[bool()] * {count}"
+    addLine(f"{p[2]} = {declarationType}")
+
+def p_declarevar(p):
+    """declarevar : DECLARE ID ':' typenames"""
+    addTrace(inspect.stack()[0][3])
+    declarationType = ""
     if   p[4] == "DATE":
         addLineIfNotFound("import datetime")
-        addLine(f"{p[2]} = datetime.datetime(1970, 1, 1)")
-    elif p[4] == "REAL"    : addLine(f"{p[2]} = float()")
-    elif p[4] == "INTEGER" : addLine(f"{p[2]} = int()")
-    elif p[4] == "CHAR"    : addLine(f"{p[2]} = str() # Should be char")
-    elif p[4] == "STRING"  : addLine(f"{p[2]} = str()")
-    elif p[4] == "BOOLEAN" : addLine(f"{p[2]} = bool()")
+        declarationType = "datetime.datetime(1970, 1, 1)"
+    elif p[4] == "REAL"    : declarationType = "float()"
+    elif p[4] == "INTEGER" : declarationType = "int()"
+    elif p[4] == "CHAR"    : declarationType = "str() # Should be char"
+    elif p[4] == "STRING"  : declarationType = "str()"
+    elif p[4] == "BOOLEAN" : declarationType = "bool()"
+    addLine(f"{p[2]} = {declarationType}")
 
 # Constant assignment
 def p_constant(p):

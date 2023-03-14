@@ -73,3 +73,5 @@ Z <- 2 >= 3 AND X OR 5 <> 3 AND NOT (3 AND 2 > Hello(2, 4, TRUE))
 x <- Hello() + 3
 OUTPUT Hi()
 OUTPUT Hi(2, Hello())
+
+DECLARE VarArr : ARRAY[1:20,1:10] OF STRING

@@ -69,10 +69,10 @@ So far, here's a checklist of what's complete and what's not:
       - [X] `<-`
       - [X] `←`
 - [ ] **3** || Arrays
-  - [ ] **3.1** || Declaring arrays
-    - [ ] Declaration
-      - [ ] One-Dimensional
-      - [ ] Two-Dimensional
+  - [X] **3.1** || Declaring arrays
+    - [X] Declaration
+      - [X] One-Dimensional
+      - [X] Two-Dimensional
   - [ ] **3.2** || Using arrays
     - [ ] Index reference
       - [ ] One-Dimensional
@@ -137,13 +137,13 @@ So far, here's a checklist of what's complete and what's not:
   - [X] **7.1** || Count-controlled (FOR) loops
   - [X] **7.2** || Post-condition (REPEAT) loops
   - [X] **7.3** || Pre-condition (WHILE) loops
-- [ ] **8** || Procedures and functions
+- [X] **8** || Procedures and functions
   - [X] **8.1** || Defining and calling procedures
     - [X] Definition
     - [X] Subroutine call (using keyword `CALL`)
   - [X] **8.2** || Defining and calling functions
     - [X] Definition
-    - [ ] Subroutine call (inline)
+    - [X] Subroutine call (inline)
   - [X] **8.3** || Passing parameters by value or by reference  
     We just ignore the presence of the keywords `BYREF` and `BYVAL`,
     since every passed parameter in Python (to my knowledge) is
