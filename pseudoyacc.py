@@ -519,12 +519,28 @@ def p_input(p):
 
 # Output statements
 def p_output(p):
-    """output : OUTPUT expr
-              | OUTPUT boolexpr
-              | OUTPUT symref
-              | OUTPUT datatypes"""
+    """output : OUTPUT outputtypes"""
     addTrace(inspect.stack()[0][3])
     addLine(f"print({p[2]})")
+
+def p_output_multi(p):
+    """output : OUTPUT outputmulti"""
+    addTrace(inspect.stack()[0][3])
+    addLine(f"print({p[2]}, sep='')")
+
+def p_outputmulti(p):
+    """outputmulti : outputmulti ',' outputmulti
+                   | outputtypes ',' outputtypes"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = f"{p[1]}, {p[3]}"
+
+def p_outputtypes(p):
+    """outputtypes : boolexpr
+                   | symref
+                   | datatypes
+                   | expr"""
+    addTrace(inspect.stack()[0][3])
+    p[0] = p[1]
 
 
 

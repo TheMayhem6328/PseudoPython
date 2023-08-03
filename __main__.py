@@ -1,7 +1,7 @@
 from pseudotoken import Tokenizer
 import pseudoyacc as Parser
 
-file = open("Main.mayudo")
+file = open("Main.mayudo", encoding="utf8")
 data = file.readlines()
 
 for line in range(len(data)):
