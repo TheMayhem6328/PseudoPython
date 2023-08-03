@@ -12,3 +12,4 @@ experiment
 
 # MacOS forks
 ._*
+.vscode/settings.json

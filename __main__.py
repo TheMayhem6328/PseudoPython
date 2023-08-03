@@ -30,7 +30,7 @@ def stackTrace():
     count = 0
     lineTrace = []
     newTrace  = []
-    for trace in parse[1]:
+    for trace in parse[1][::-1]:
         print(trace)
         """
         if trace == "p_root":
@@ -41,4 +41,4 @@ def stackTrace():
         """
 
 # Uncomment below line to print out trace
-# stackTrace()
+stackTrace()

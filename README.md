@@ -15,7 +15,7 @@ Pseudocode is by definition simply a series of code-like statements written usin
 
 I personally learnt Python primarily through the means of experimenting with its syntax. I used to make random scripts and projects written in Python. Unfortunately, the same is not possible for pseudocode. Since pseudocode is not even a real language, no compiler or interpreter exist for it. This posed to be a challenge for me - I used to forget Cambridge's syntax very often. Also, I would appreciate pseudocode being functional one day.
 
-That is why I set out to make a transpiler for pseudocode. I initially wanted to create an interpreter, but apparently directly executing the code is a tad bit more difficult than just translating it to Python line-by-line and then executing the general code - both served the same goal of making pseudocode executable, so since it was easier to process the latter while nSot impacting functionality, I went with that.
+That is why I set out to make a transpiler for pseudocode. I initially wanted to create an interpreter, but apparently directly executing the code is a tad bit more difficult than just translating it to Python line-by-line and then executing the output code - both served the same goal of making pseudocode executable, so since it was easier to process the latter while not impacting functionality, I went with that.
 
 ## Progress
 
@@ -107,12 +107,13 @@ So far, here's a checklist of what's complete and what's not:
     - [X] OR
     - [X] NOT
   - [ ] **5.5** || String functions and operations
-    - [ ] String functions
-      - [ ] `RIGHT(ThisString : STRING, x : INTEGER) RETURNS STRING`
-      - [ ] `LENGTH(ThisString : STRING) RETURNS INTEGER`
-      - [ ] `MID(ThisString : STRING, x : INTEGER, y : INTEGER) RETURNS STRING`
-      - [ ] `LCASE(ThisChar : CHAR) RETURNS CHAR`
-      - [ ] `UCASE(ThisChar : CHAR) RETURNS CHAR`
+    - [X] String functions
+      - [X] `LEFT(ThisString : STRING, x : INTEGER) RETURNS STRING`
+      - [X] `RIGHT(ThisString : STRING, x : INTEGER) RETURNS STRING`
+      - [X] `LENGTH(ThisString : STRING) RETURNS INTEGER`
+      - [X] `MID(ThisString : STRING, x : INTEGER, y : INTEGER) RETURNS STRING`
+      - [X] `LCASE(ThisChar : CHAR) RETURNS CHAR`
+      - [X] `UCASE(ThisChar : CHAR) RETURNS CHAR`
     - [ ] Concatenation operator (&)
   - [ ] **5.6** || Numeric functions
     - [ ] `INT(x : REAL) RETURNS INTEGER`

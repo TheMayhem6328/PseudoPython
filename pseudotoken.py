@@ -4,8 +4,7 @@
 # A WIP library for interpreting cambridge pseudocode
 # ------------------------------------------------------------
 import ply.lex  as lex
-import ply.yacc as yacc
-import datetime
+from datetime import date
 
 class Tokenizer:
     # List of reserved words:
@@ -37,6 +36,7 @@ class Tokenizer:
         'ENDIF',
         # FOR Definition
         'FOR',
+        'TO',
         'NEXT',
         'ENDFOR',
         # WHILE Definition
@@ -51,6 +51,16 @@ class Tokenizer:
         'BYVAL',
         'ENDPROCEDURE',
         'CALL',
+        # String Functions Definition
+        'LEFT',
+        'RIGHT',
+        'LENGTH',
+        'MID',
+        'LCASE',
+        'UCASE',
+        # Numeric Functions Definition
+        'INT',
+        'RAND',
         # FUNCTION Definition
         'FUNCTION',
         'RETURNS',
@@ -76,7 +86,6 @@ class Tokenizer:
         'COMMENT',
         'ASSIGN',
         # Data Types
-        'RANGETYPE',
         'DATETYPE',
         'REALTYPE',
         'INTEGERTYPE',
@@ -119,20 +128,14 @@ class Tokenizer:
     def t_SPACE(t):
         r'\ '
     
-    # Data Types
-    def t_RANGETYPE(t):
-        '\d+\ TO\ \d+'
-        value = t.value.split(" TO ")
-        t.value = range(int(value[0]), int(value[1]) + 1)
-        return t
-    
     def t_DATETYPE(t):
         r'\d{2}/\d{2}/\d{4}'
-        t.value = datetime.datetime(
-            int(t.value[6:10]),
-            int(t.value[3:5]),
-            int(t.value[0:2])
-        )
+        temp = t.value
+        t.value =   "date("
+        t.value += f"{ int(temp[6:10])},"
+        t.value += f" {int(temp[3:5])},"
+        t.value += f" {int(temp[0:2])}"
+        t.value +=  ")"
         return t
         
     def t_REALTYPE(t):
