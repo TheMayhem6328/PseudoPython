@@ -543,19 +543,6 @@ def p_oneparamstringfunccases(p):
     p[0] = p[1]
 
 
-def p_stringref_base(p):
-    """stringref : STRINGTYPE
-    | symref"""
-    addTrace(inspect.stack()[0][3], p)
-    p[0] = p[1]
-
-
-def p_stringref_concat(p):
-    """stringref : stringref '&' stringref"""
-    addTrace(inspect.stack()[0][3], p)
-    p[0] = f"{p[1]}+{p[3]}"
-
-
 # Numeric functions
 def p_numfunc(p):
     """numfunc : ID"""
@@ -648,15 +635,6 @@ def p_outputmulti(p):
     p[0] = f"{p[1]}, {p[3]}"
 
 
-def p_outputtypes(p):
-    """outputtypes : boolexpr
-    | symref
-    | datatypes
-    | expr"""
-    addTrace(inspect.stack()[0][3], p)
-    p[0] = p[1]
-
-
 # == Operand parsing
 
 # Booleans Operations
@@ -745,7 +723,17 @@ def p_expr_terms(p):
     p[0] = p[1]
 
 
-# Data types
+# Output data type handling
+def p_outputtypes(p):
+    """outputtypes : boolexpr
+    | symref
+    | datatypes
+    | expr"""
+    addTrace(inspect.stack()[0][3], p)
+    p[0] = p[1]
+
+
+# Primitive data types
 def p_datatypes(p):
     """datatypes : stringref
     | CHARTYPE
@@ -778,6 +766,20 @@ def p_boolexpr_group(p):
     """boolexpr : '(' boolexpr ')'"""
     addTrace(inspect.stack()[0][3], p)
     p[0] = f"({p[2]})"
+
+
+# String handling
+def p_stringref_base(p):
+    """stringref : STRINGTYPE
+    | symref"""
+    addTrace(inspect.stack()[0][3], p)
+    p[0] = p[1]
+
+
+def p_stringref_concat(p):
+    """stringref : stringref '&' stringref"""
+    addTrace(inspect.stack()[0][3], p)
+    p[0] = f"{p[1]}+{p[3]}"
 
 
 # Identifier resolution
