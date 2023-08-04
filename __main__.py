@@ -30,15 +30,11 @@ def stackTrace():
     count = 0
     lineTrace = []
     newTrace  = []
-    for trace in parse[1][::-1]:
-        print(trace)
-        """
-        if trace == "p_root":
-            print("==LINE==")
-            for element in range(len(lineTrace)):
-                newTrace.append(newTrace[-(element+1)])
-        lineTrace.append(trace)
-        """
+    for trace in parse[1]:
+        if trace in ["p_root [None]", "(Blank line)"]:
+            print("----LINE----")
+        else:
+            print(trace)
 
 # Uncomment below line to print out trace
 stackTrace()

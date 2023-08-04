@@ -106,7 +106,7 @@ So far, here's a checklist of what's complete and what's not:
     - [X] AND
     - [X] OR
     - [X] NOT
-  - [ ] **5.5** || String functions and operations
+  - [X] **5.5** || String functions and operations
     - [X] String functions
       - [X] `LEFT(ThisString : STRING, x : INTEGER) RETURNS STRING`
       - [X] `RIGHT(ThisString : STRING, x : INTEGER) RETURNS STRING`
@@ -114,7 +114,7 @@ So far, here's a checklist of what's complete and what's not:
       - [X] `MID(ThisString : STRING, x : INTEGER, y : INTEGER) RETURNS STRING`
       - [X] `LCASE(ThisChar : CHAR) RETURNS CHAR`
       - [X] `UCASE(ThisChar : CHAR) RETURNS CHAR`
-    - [ ] Concatenation operator (&)
+    - [X] Concatenation operator (&)
   - [ ] **5.6** || Numeric functions
     - [ ] `INT(x : REAL) RETURNS INTEGER`
     - [ ] `RAND(x : INTEGER) RETURNS REAL`
