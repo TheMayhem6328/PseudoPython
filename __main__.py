@@ -31,7 +31,7 @@ def stackTrace():
     lineTrace = []
     newTrace  = []
     for trace in parse[1]:
-        if trace in ["p_root [None]", "(Blank line)"]:
+        if trace in ["p_root[None]", "(Blank line)"]:
             print("----LINE----")
         else:
             print(trace)

@@ -115,9 +115,9 @@ So far, here's a checklist of what's complete and what's not:
       - [X] `LCASE(ThisChar : CHAR) RETURNS CHAR`
       - [X] `UCASE(ThisChar : CHAR) RETURNS CHAR`
     - [X] Concatenation operator (&)
-  - [ ] **5.6** || Numeric functions
-    - [ ] `INT(x : REAL) RETURNS INTEGER`
-    - [ ] `RAND(x : INTEGER) RETURNS REAL`
+  - [X] **5.6** || Numeric functions
+    - [X] `INT(x : REAL) RETURNS INTEGER`
+    - [X] `RAND(x : INTEGER) RETURNS REAL`
 - [ ] **6** || Selection
   - [X] **6.1** || IF statements  
     Fortunately in pseudocode, for block-like logic, we have keywords

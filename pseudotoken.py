@@ -4,8 +4,6 @@
 # A WIP library for interpreting cambridge pseudocode
 # ------------------------------------------------------------
 import ply.lex as lex
-from datetime import date
-
 
 class Tokenizer:
     # List of reserved words:

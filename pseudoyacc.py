@@ -210,8 +210,10 @@ def p_declarearr_2D(p):
     countRow = int(p[8]) - (int(p[6]) - 1)
     countCol = int(p[12]) - (int(p[10]) - 1)
     if p[15] == "DATE":
-        addLineIfNotFound("import datetime")
-        declarationType = f"[[datetime.datetime(1970, 1, 1)] * {countCol}] * {countRow}"
+        addLineIfNotFound(
+            "from datetime import date # Added by transpiler to add date support"
+        )
+        declarationType = f"[[date(1970, 1, 1)] * {countCol}] * {countRow}"
     elif p[15] == "REAL":
         declarationType = f"[[float()] * {countCol}] * {countRow}"
     elif p[15] == "INTEGER":
@@ -222,7 +224,7 @@ def p_declarearr_2D(p):
         declarationType = f"[[str()] * {countCol}] * {countRow}"
     elif p[15] == "BOOLEAN":
         declarationType = f"[[bool()] * {countCol}] * {countRow}"
-    addLine(f"{p[2]} = {declarationType}")
+    addLine(f"{p[2]} = {declarationType} # Declaration")
 
 
 # 1D Arrays
@@ -232,8 +234,10 @@ def p_declarearr_1D(p):
     declarationType = ""
     count = int(p[8]) - (int(p[6]) - 1)
     if p[11] == "DATE":
-        addLineIfNotFound("import datetime")
-        declarationType = f"[datetime.datetime(1970, 1, 1)] * {count}"
+        addLineIfNotFound(
+            "from datetime import date # Added by transpiler to add date support"
+        )
+        declarationType = f"[date(1970, 1, 1)] * {count}"
     elif p[11] == "REAL":
         declarationType = f"[float()] * {count}"
     elif p[11] == "INTEGER":
@@ -244,7 +248,7 @@ def p_declarearr_1D(p):
         declarationType = f"[str()] * {count}"
     elif p[11] == "BOOLEAN":
         declarationType = f"[bool()] * {count}"
-    addLine(f"{p[2]} = {declarationType}")
+    addLine(f"{p[2]} = {declarationType} # Declaration")
 
 
 def p_declarevar(p):
@@ -266,7 +270,7 @@ def p_declarevar(p):
         declarationType = "str()"
     elif p[4] == "BOOLEAN":
         declarationType = "bool()"
-    addLine(f"{p[2]} = {declarationType}")
+    addLine(f"{p[2]} = {declarationType} # Declaration")
 
 
 def p_declid(p):
@@ -358,7 +362,9 @@ def p_startfunc_paramfree(p):
     addTrace(inspect.stack()[0][3], p)
     dataType = ""
     if p[6] == "DATE":
-        addLineIfNotFound("import datetime")
+        addLineIfNotFound(
+            "from datetime import date # Added by transpiler to add date support"
+        )
         dataType = "datetime.date"
     elif p[6] == "REAL":
         dataType = "float"
@@ -381,7 +387,9 @@ def p_startfunc_paramed(p):
     addTrace(inspect.stack()[0][3], p)
     dataType = ""
     if p[7] == "DATE":
-        addLineIfNotFound("import datetime")
+        addLineIfNotFound(
+            "from datetime import date # Added by transpiler to add date support"
+        )
         dataType = "datetime.date"
     elif p[7] == "REAL":
         dataType = "float"
@@ -545,9 +553,25 @@ def p_oneparamstringfunccases(p):
 
 # Numeric functions
 def p_numfunc(p):
-    """numfunc : ID"""
+    """numfunc : intnumfunc
+    | randnumfunc"""
     addTrace(inspect.stack()[0][3], p)
     p[0] = p[1]
+
+
+def p_intnumfunc(p):
+    """intnumfunc : INT '(' expr ')'"""
+    addTrace(inspect.stack()[0][3], p)
+    p[0] = f"int({p[3]})"
+
+
+def p_randnumfunc(p):
+    """randnumfunc : RAND '(' expr ')'"""
+    addTrace(inspect.stack()[0][3], p)
+    addLineIfNotFound(
+        "from random import randint as rand # Added by transpiler to add random support"
+    )
+    p[0] = f"rand(1, {p[3]})"
 
 
 # == I/O
