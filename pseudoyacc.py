@@ -13,32 +13,32 @@ indentCount = 0
 
 
 # Define utility functions
-def addLine(text: str):
+def add_line(text: str):
     parseLines.append(" " * indentCount + text)
 
 
-def addTrace(text: str, p: any):
-    if p != None and type(p) != lex.LexToken:
+def add_trace(text: str, p: any):
+    if p is not None and type(p) != lex.LexToken:
         stackTrace.append(text + str(list(p)[1:]))
     else:
         stackTrace.append(text)
 
 
-def incrementDepth(depth: int = 1):
+def increment_depth(depth: int = 1):
     global indentCount
     indentCount += 4 * depth
 
 
-def decrementDepth(depth: int = 1):
+def decrement_depth(depth: int = 1):
     global indentCount
     indentCount -= 4 * depth
 
 
-def addLineIfNotFound(utilLine: str):
+def add_line_if_not_found(utility_line: str):
     try:
-        parseLines.index(utilLine)
+        parseLines.index(utility_line)
     except ValueError:
-        addLine(utilLine)
+        add_line(utility_line)
 
 
 # Starting rule
@@ -49,11 +49,11 @@ def p_root(p):
     | declare
     | subroutine
     | assign
-    | fileops
+    | file_operation
     | constant
     | input
     | output"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
@@ -63,8 +63,8 @@ def p_root(p):
 # Comment parsing
 def p_comment(p):
     """comment : COMMENT"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"#{str(p[1]).removeprefix('//')}")
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"#{str(p[1]).removeprefix('//')}")
 
 
 # == Conditional selection
@@ -74,37 +74,38 @@ def p_comment(p):
 
 
 def p_if(p):
-    """if : ifstart
+    """if : if_start
     | then
     | else
-    | endif"""
+    | end_if"""
+    p[0] = p[1]
 
 
-def p_ifstart(p):
-    """ifstart : IF boolexpr THEN
-    | IF boolexpr"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"if {p[2]}:")
-    incrementDepth()
+def p_if_start(p):
+    """if_start : IF boolean_expression THEN
+    | IF boolean_expression"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"if {p[2]}:")
+    increment_depth()
 
 
 def p_then(p):
     """then : THEN"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
 
 
 def p_else(p):
     """else : ELSE"""
-    addTrace(inspect.stack()[0][3], p)
-    decrementDepth()
-    addLine("else:")
-    incrementDepth()
+    add_trace(inspect.stack()[0][3], p)
+    decrement_depth()
+    add_line("else:")
+    increment_depth()
 
 
-def p_endif(p):
-    """endif : ENDIF"""
-    addTrace(inspect.stack()[0][3], p)
-    decrementDepth()
+def p_end_if(p):
+    """end_if : ENDIF"""
+    add_trace(inspect.stack()[0][3], p)
+    decrement_depth()
 
 
 # == Loops
@@ -114,82 +115,82 @@ def p_endif(p):
 def p_loop(p):
     """loop : for
     | while
-    | repeatuntil"""
-    addTrace(inspect.stack()[0][3], p)
+    | repeat_until"""
+    add_trace(inspect.stack()[0][3], p)
 
 
 # For loops
 
 
 def p_for(p):
-    """for : forstart
-    | endfor"""
-    addTrace(inspect.stack()[0][3], p)
+    """for : for_start
+    | end_for"""
+    add_trace(inspect.stack()[0][3], p)
 
 
-def p_forstart(p):
-    """forstart : FOR ID ASSIGN rangefor"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"for {p[2]} in {p[4]}")
-    incrementDepth()
+def p_for_start(p):
+    """for_start : FOR ID ASSIGN range_for"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"for {p[2]} in {p[4]}")
+    increment_depth()
 
 
-def p_rangefor(p):
-    """rangefor : expr TO expr"""
-    addTrace(inspect.stack()[0][3], p)
+def p_range_for(p):
+    """range_for : expression TO expression"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"range({p[1]}, {p[3]} + 1):"
 
 
-def p_endfor(p):
-    """endfor : ENDFOR
+def p_end_for(p):
+    """end_for : ENDFOR
     | NEXT ID"""
-    addTrace(inspect.stack()[0][3], p)
-    decrementDepth()
+    add_trace(inspect.stack()[0][3], p)
+    decrement_depth()
 
 
 # While loops
 
 
 def p_while(p):
-    """while : whilestart
-    | endwhile"""
-    addTrace(inspect.stack()[0][3], p)
+    """while : while_start
+    | end_while"""
+    add_trace(inspect.stack()[0][3], p)
 
 
-def p_whilestart(p):
-    """whilestart : WHILE boolexpr"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"while {p[2]}:")
-    incrementDepth()
+def p_while_start(p):
+    """while_start : WHILE boolean_expression"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"while {p[2]}:")
+    increment_depth()
 
 
-def p_endwhile(p):
-    """endwhile : ENDWHILE"""
-    addTrace(inspect.stack()[0][3], p)
-    decrementDepth()
+def p_end_while(p):
+    """end_while : ENDWHILE"""
+    add_trace(inspect.stack()[0][3], p)
+    decrement_depth()
 
 
 # Repeat-Until loops
 
 
-def p_repeatuntil(p):
-    """repeatuntil : repeat
+def p_repeat_until(p):
+    """repeat_until : repeat
     | until"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
 
 
 def p_repeat(p):
     """repeat : REPEAT"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"while True:")
-    incrementDepth()
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"while True:")
+    increment_depth()
 
 
 def p_until(p):
-    """until : UNTIL boolexpr"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"if {p[2]}: break")
-    decrementDepth()
+    """until : UNTIL boolean_expression"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"if {p[2]}: break")
+    decrement_depth()
 
 
 # == Data flow
@@ -197,102 +198,102 @@ def p_until(p):
 
 # Declaration statements
 def p_declare(p):
-    """declare : declarearr
-    | declarevar"""
-    addTrace(inspect.stack()[0][3], p)
+    """declare : declare_array
+    | declare_variable"""
+    add_trace(inspect.stack()[0][3], p)
 
 
 # 2D Arrays
-def p_declarearr_2D(p):
-    """declarearr : DECLARE declid ':' ARRAY '[' expr ':' expr ',' expr ':' expr ']' OF typenames"""
-    addTrace(inspect.stack()[0][3], p)
-    declarationType = ""
-    countRow = int(p[8]) - (int(p[6]) - 1)
-    countCol = int(p[12]) - (int(p[10]) - 1)
+def p_declare_array__2d(p):
+    """declare_array : DECLARE declare_id ':' ARRAY '[' expression ':' expression ',' expression ':' expression ']' OF type_names"""
+    add_trace(inspect.stack()[0][3], p)
+    declaration_type = ""
+    count_row = int(p[8]) - (int(p[6]) - 1)
+    count_col = int(p[12]) - (int(p[10]) - 1)
     if p[15] == "DATE":
-        addLineIfNotFound(
+        add_line_if_not_found(
             "from datetime import date # Added by transpiler to add date support"
         )
-        declarationType = f"[[date(1970, 1, 1)] * {countCol}] * {countRow}"
+        declaration_type = f"[[date(1970, 1, 1)] * {count_col}] * {count_row}"
     elif p[15] == "REAL":
-        declarationType = f"[[float()] * {countCol}] * {countRow}"
+        declaration_type = f"[[float()] * {count_col}] * {count_row}"
     elif p[15] == "INTEGER":
-        declarationType = f"[[int()] * {countCol}] * {countRow}"
+        declaration_type = f"[[int()] * {count_col}] * {count_row}"
     elif p[15] == "CHAR":
-        declarationType = f"[[str()] * {countCol}] * {countRow} # Should be char"
+        declaration_type = f"[[str()] * {count_col}] * {count_row} # Should be char"
     elif p[15] == "STRING":
-        declarationType = f"[[str()] * {countCol}] * {countRow}"
+        declaration_type = f"[[str()] * {count_col}] * {count_row}"
     elif p[15] == "BOOLEAN":
-        declarationType = f"[[bool()] * {countCol}] * {countRow}"
-    addLine(f"{p[2]} = {declarationType} # Declaration")
+        declaration_type = f"[[bool()] * {count_col}] * {count_row}"
+    add_line(f"{p[2]} = {declaration_type} # Declaration")
 
 
 # 1D Arrays
-def p_declarearr_1D(p):
-    """declarearr : DECLARE declid ':' ARRAY '[' expr ':' expr ']' OF typenames"""
-    addTrace(inspect.stack()[0][3], p)
-    declarationType = ""
+def p_declare_array__1d(p):
+    """declare_array : DECLARE declare_id ':' ARRAY '[' expression ':' expression ']' OF type_names"""
+    add_trace(inspect.stack()[0][3], p)
+    declaration_type = ""
     count = int(p[8]) - (int(p[6]) - 1)
     if p[11] == "DATE":
-        addLineIfNotFound(
+        add_line_if_not_found(
             "from datetime import date # Added by transpiler to add date support"
         )
-        declarationType = f"[date(1970, 1, 1)] * {count}"
+        declaration_type = f"[date(1970, 1, 1)] * {count}"
     elif p[11] == "REAL":
-        declarationType = f"[float()] * {count}"
+        declaration_type = f"[float()] * {count}"
     elif p[11] == "INTEGER":
-        declarationType = f"[int()] * {count}"
+        declaration_type = f"[int()] * {count}"
     elif p[11] == "CHAR":
-        declarationType = f"[str()] * {count} # Should be char"
+        declaration_type = f"[str()] * {count} # Should be char"
     elif p[11] == "STRING":
-        declarationType = f"[str()] * {count}"
+        declaration_type = f"[str()] * {count}"
     elif p[11] == "BOOLEAN":
-        declarationType = f"[bool()] * {count}"
-    addLine(f"{p[2]} = {declarationType} # Declaration")
+        declaration_type = f"[bool()] * {count}"
+    add_line(f"{p[2]} = {declaration_type} # Declaration")
 
 
-def p_declarevar(p):
-    """declarevar : DECLARE declid ':' typenames"""
-    addTrace(inspect.stack()[0][3], p)
-    declarationType = ""
+def p_declare_variable(p):
+    """declare_variable : DECLARE declare_id ':' type_names"""
+    add_trace(inspect.stack()[0][3], p)
+    declaration_type = ""
     if p[4] == "DATE":
-        addLineIfNotFound(
-            "from datetime import date # Not in source, but added to add support for date datatypes"
+        add_line_if_not_found(
+            "from datetime import date # Not in source, but added to add support for date data_types"
         )
-        declarationType = "date(1970, 1, 1)"
+        declaration_type = "date(1970, 1, 1)"
     elif p[4] == "REAL":
-        declarationType = "float()"
+        declaration_type = "float()"
     elif p[4] == "INTEGER":
-        declarationType = "int()"
+        declaration_type = "int()"
     elif p[4] == "CHAR":
-        declarationType = "str() # Should be char"
+        declaration_type = "str() # Should be char"
     elif p[4] == "STRING":
-        declarationType = "str()"
+        declaration_type = "str()"
     elif p[4] == "BOOLEAN":
-        declarationType = "bool()"
-    addLine(f"{p[2]} = {declarationType} # Declaration")
+        declaration_type = "bool()"
+    add_line(f"{p[2]} = {declaration_type} # Declaration")
 
 
-def p_declid(p):
-    """declid : ID"""
-    addTrace(inspect.stack()[0][3], p)
+def p_declare_id(p):
+    """declare_id : ID"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
 # Constant assignment
 def p_constant(p):
-    """constant : CONSTANT ID EQUALTO datatypes"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"{p[2]} = {p[4]} # Constant")
+    """constant : CONSTANT ID EQUALTO data_types"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"{p[2]} = {p[4]} # Constant")
 
 
 # Assign statements
 def p_assign(p):
-    """assign : symref ASSIGN expr
-    | symref ASSIGN boolexpr
-    | symref ASSIGN datatypes"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"{p[1]} = {p[3]}")
+    """assign : symbol_reference ASSIGN expression
+    | symbol_reference ASSIGN boolean_expression
+    | symbol_reference ASSIGN data_types"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"{p[1]} = {p[3]}")
 
 
 # == Subroutines
@@ -301,195 +302,195 @@ def p_assign(p):
 def p_subroutine(p):
     """subroutine : procedure
     | function"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
 
 
 # Procedures
 
 
 def p_procedure(p):
-    """procedure : startprocedure
-    | endprocedure
+    """procedure : start_procedure
+    | end_procedure
     | call"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
 
 
-def p_startprocedure_paramfree(p):
-    """startprocedure : PROCEDURE ID '(' ')'"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"def {p[2]}():")
-    incrementDepth()
+def p_start_procedure__parameter_free(p):
+    """start_procedure : PROCEDURE ID '(' ')'"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"def {p[2]}():")
+    increment_depth()
 
 
-def p_startprocedure_paramed(p):
-    """startprocedure : PROCEDURE ID '(' paramdef ')'"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"def {p[2]}({p[4]}):")
-    incrementDepth()
+def p_start_procedure__parameter_inclusive(p):
+    """start_procedure : PROCEDURE ID '(' parameter_definition ')'"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"def {p[2]}({p[4]}):")
+    increment_depth()
 
 
-def p_endprocedure(p):
-    """endprocedure : ENDPROCEDURE"""
-    addTrace(inspect.stack()[0][3], p)
-    decrementDepth()
+def p_end_procedure(p):
+    """end_procedure : ENDPROCEDURE"""
+    add_trace(inspect.stack()[0][3], p)
+    decrement_depth()
 
 
-def p_call_paramfree(p):
+def p_call_parameter_free(p):
     """call : CALL ID"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"{p[2]}()")
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"{p[2]}()")
 
 
-def p_call_paramed(p):
-    """call : CALL ID '(' paramfeed ')'"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"{p[2]}({p[4]})")
+def p_call_parameter_inclusive(p):
+    """call : CALL ID '(' parameter_feed ')'"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"{p[2]}({p[4]})")
 
 
 # Functions
 
 
 def p_function(p):
-    """function : startfunc
+    """function : start_function
     | return
-    | endfunc
-    | inlinecall"""
-    addTrace(inspect.stack()[0][3], p)
+    | end_function
+    | inline_call"""
+    add_trace(inspect.stack()[0][3], p)
 
 
-def p_startfunc_paramfree(p):
-    """startfunc : FUNCTION ID '(' ')' RETURNS typenames"""
-    addTrace(inspect.stack()[0][3], p)
-    dataType = ""
+def p_start_function__parameter_free(p):
+    """start_function : FUNCTION ID '(' ')' RETURNS type_names"""
+    add_trace(inspect.stack()[0][3], p)
+    data_type = ""
     if p[6] == "DATE":
-        addLineIfNotFound(
+        add_line_if_not_found(
             "from datetime import date # Added by transpiler to add date support"
         )
-        dataType = "datetime.date"
+        data_type = "datetime.date"
     elif p[6] == "REAL":
-        dataType = "float"
+        data_type = "float"
     elif p[6] == "INTEGER":
-        dataType = "int"
+        data_type = "int"
     elif p[6] == "CHAR":
-        dataType = "str"
+        data_type = "str"
     elif p[6] == "STRING":
-        dataType = "str"
+        data_type = "str"
     elif p[6] == "BOOLEAN":
-        dataType = "bool"
+        data_type = "bool"
     elif p[6] == "ARRAY":
-        dataType = "list"
-    addLine(f"def {p[2]}() -> {dataType}:")
-    incrementDepth()
+        data_type = "list"
+    add_line(f"def {p[2]}() -> {data_type}:")
+    increment_depth()
 
 
-def p_startfunc_paramed(p):
-    """startfunc : FUNCTION ID '(' paramdef ')' RETURNS typenames"""
-    addTrace(inspect.stack()[0][3], p)
-    dataType = ""
+def p_start_function_parameter_inclusive(p):
+    """start_function : FUNCTION ID '(' parameter_definition ')' RETURNS type_names"""
+    add_trace(inspect.stack()[0][3], p)
+    data_type = ""
     if p[7] == "DATE":
-        addLineIfNotFound(
+        add_line_if_not_found(
             "from datetime import date # Added by transpiler to add date support"
         )
-        dataType = "datetime.date"
+        data_type = "datetime.date"
     elif p[7] == "REAL":
-        dataType = "float"
+        data_type = "float"
     elif p[7] == "INTEGER":
-        dataType = "int"
+        data_type = "int"
     elif p[7] == "CHAR":
-        dataType = "str"
+        data_type = "str"
     elif p[7] == "STRING":
-        dataType = "str"
+        data_type = "str"
     elif p[7] == "BOOLEAN":
-        dataType = "bool"
-    addLine(f"def {p[2]}({p[4]}) -> {dataType}:")
-    incrementDepth()
+        data_type = "bool"
+    add_line(f"def {p[2]}({p[4]}) -> {data_type}:")
+    increment_depth()
 
 
 def p_return(p):
-    """return : RETURN expr
-    | RETURN boolexpr
+    """return : RETURN expression
+    | RETURN boolean_expression
     | RETURN ID
-    | RETURN datatypes"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"return {p[2]}")
+    | RETURN data_types"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"return {p[2]}")
 
 
-def p_endfunc(p):
-    """endfunc : ENDFUNCTION"""
-    addTrace(inspect.stack()[0][3], p)
-    decrementDepth()
+def p_end_function(p):
+    """end_function : ENDFUNCTION"""
+    add_trace(inspect.stack()[0][3], p)
+    decrement_depth()
 
 
-def p_inlinecall_builtin(p):
-    """inlinecall : builtinfunc"""
-    addTrace(inspect.stack()[0][3], p)
+def p_inline_call_builtin(p):
+    """inline_call : builtin_functions"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
-def p_inlinecall_paramfree(p):
-    """inlinecall : ID '('  ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_inline_call__parameter_free(p):
+    """inline_call : ID '('  ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}()"
 
 
-def p_inlinecall_paramed(p):
-    """inlinecall : ID '(' paramfeed ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_inline_call_parameter_inclusive(p):
+    """inline_call : ID '(' parameter_feed ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}({p[3]})"
 
 
 # Parameter flow parsing
 
 
-def p_paramdef_recursion(p):
-    """paramdef : paramdef ',' paramdef"""
-    addTrace(inspect.stack()[0][3], p)
+def p_parameter_definition_recursion(p):
+    """parameter_definition : parameter_definition ',' parameter_definition"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}, {p[3]}"
 
 
-def p_paramdef_passby(p):
-    """paramdef : BYREF paramdef
-    | BYVAL paramdef"""
+def p_parameter_definition__pass_by(p):
+    """parameter_definition : BYREF parameter_definition
+    | BYVAL parameter_definition"""
     p[0] = p[2]
 
 
-def p_paramdef_init(p):
-    """paramdef : ID ':' typenames"""
-    addTrace(inspect.stack()[0][3], p)
-    dataType = ""
+def p_parameter_definition_init(p):
+    """parameter_definition : ID ':' type_names"""
+    add_trace(inspect.stack()[0][3], p)
+    data_type = ""
     if p[3] == "DATE":
-        utilLine = "import datetime"
+        util_line = "import datetime"
         try:
-            parseLines.index(utilLine)
+            parseLines.index(util_line)
         except ValueError:
-            addLine(utilLine)
-        dataType = "datetime.date"
+            add_line(util_line)
+        data_type = "datetime.date"
     elif p[3] == "REAL":
-        dataType = "float"
+        data_type = "float"
     elif p[3] == "INTEGER":
-        dataType = "int"
+        data_type = "int"
     elif p[3] == "CHAR":
-        dataType = "str"
+        data_type = "str"
     elif p[3] == "STRING":
-        dataType = "str"
+        data_type = "str"
     elif p[3] == "BOOLEAN":
-        dataType = "bool"
-    p[0] = f"{p[1]} : {dataType}"
+        data_type = "bool"
+    p[0] = f"{p[1]} : {data_type}"
 
 
-def p_paramfeed_recursion(p):
-    """paramfeed : paramfeed ',' paramfeed"""
-    addTrace(inspect.stack()[0][3], p)
+def p_parameter_feed_recursion(p):
+    """parameter_feed : parameter_feed ',' parameter_feed"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}, {p[3]}"
 
 
-def p_paramfeed_init(p):
-    """paramfeed : expr
-    | boolexpr
-    | symref
-    | datatypes
-    | inlinecall"""
-    addTrace(inspect.stack()[0][3], p)
+def p_parameter_feed_init(p):
+    """parameter_feed : expression
+    | boolean_expression
+    | symbol_reference
+    | data_types
+    | inline_call"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = str(p[1])
 
 
@@ -497,44 +498,44 @@ def p_paramfeed_init(p):
 
 
 # Catch-all builtin function handling
-def p_builtinfunc(p):
-    """builtinfunc : stringfunc
-    | numfunc"""
-    addTrace(inspect.stack()[0][3], p)
+def p_builtin_functions(p):
+    """builtin_functions : string_functions
+    | number_functions"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
 # String functions
-def p_stringfunc(p):
-    """stringfunc : leftstringfunc
-    | rightstringfunc
-    | midstringfunc
-    | oneparamstringfunc"""
-    addTrace(inspect.stack()[0][3], p)
+def p_string_functions(p):
+    """string_functions : left_string_function
+    | right_string_function
+    | mid_string_function
+    | one_parameter_string_function"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
-def p_leftstringfunc(p):
-    """leftstringfunc : LEFT '(' stringref ',' expr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_left_string_function(p):
+    """left_string_function : LEFT '(' string_reference ',' expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[3]}[:{p[5]}]"
 
 
-def p_rightstringfunc(p):
-    """rightstringfunc : RIGHT '(' stringref ',' expr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_right_string_function(p):
+    """right_string_function : RIGHT '(' string_reference ',' expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[3]}[len({p[3]}) - ({p[5]}):]"
 
 
-def p_midstringfunc(p):
-    """midstringfunc : MID '(' stringref ',' expr ',' expr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_mid_string_function(p):
+    """mid_string_function : MID '(' string_reference ',' expression ',' expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[3]}[({p[5]}-1):(({p[5]}-1)+{p[7]})]"
 
 
-def p_oneparamstringfunc(p):
-    """oneparamstringfunc : oneparamstringfunccases '(' stringref ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_one_parameter_string_function(p):
+    """one_parameter_string_function : one_parameter_string_function_cases '(' string_reference ')'"""
+    add_trace(inspect.stack()[0][3], p)
     if p[1] == "LENGTH":
         p[0] = f"len({p[3]})"
     elif p[1] == "LCASE":
@@ -543,32 +544,32 @@ def p_oneparamstringfunc(p):
         p[0] = f"{p[3]}.upper()"
 
 
-def p_oneparamstringfunccases(p):
-    """oneparamstringfunccases : LENGTH
+def p_one_parameter_string_function_cases(p):
+    """one_parameter_string_function_cases : LENGTH
     | LCASE
     | UCASE"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
 # Numeric functions
-def p_numfunc(p):
-    """numfunc : intnumfunc
-    | randnumfunc"""
-    addTrace(inspect.stack()[0][3], p)
+def p_number_functions(p):
+    """number_functions : int_number_function
+    | rand_number_function"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
-def p_intnumfunc(p):
-    """intnumfunc : INT '(' expr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_int_number_function(p):
+    """int_number_function : INT '(' expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"int({p[3]})"
 
 
-def p_randnumfunc(p):
-    """randnumfunc : RAND '(' expr ')'"""
-    addTrace(inspect.stack()[0][3], p)
-    addLineIfNotFound(
+def p_rand_number_function(p):
+    """rand_number_function : RAND '(' expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line_if_not_found(
         "from random import randint as rand # Added by transpiler to add random support"
     )
     p[0] = f"rand(1, {p[3]})"
@@ -579,53 +580,54 @@ def p_randnumfunc(p):
 # File operations
 
 
-def p_fileops(p):
-    """fileops : openfile
-    | readfile
-    | writefile
-    | closefile"""
-    addTrace(inspect.stack()[0][3], p)
+def p_file_operation(p):
+    """file_operation : open_file
+    | read_file
+    | write_file
+    | close_file"""
+    add_trace(inspect.stack()[0][3], p)
 
 
-def p_openfile(p):
-    """openfile : OPENFILE fileid FOR filemodes"""
-    addTrace(inspect.stack()[0][3], p)
+def p_open_file(p):
+    """open_file : OPENFILE file_id FOR file_modes"""
+    mode = str()
+    add_trace(inspect.stack()[0][3], p)
     for modeTranslate in [["READ", "rt"], ["WRITE", "wt"], ["APPEND", "at"]]:
         if p[4] == modeTranslate[0]:
             mode = modeTranslate[1]
-    addLineIfNotFound("fileDict = dict() # Utility dictionary, from transpiler")
+    add_line_if_not_found("fileDict = dict() # Utility dictionary, from transpiler")
     bb = ["{", "}"]
-    addLine(f"fileDict.update({bb[0]}{p[2]}: open({p[2]}, '{mode}'){bb[1]})")
+    add_line(f"fileDict.update({bb[0]}{p[2]}: open({p[2]}, '{mode}'){bb[1]})")
 
 
-def p_readfile(p):
-    """readfile : READFILE fileid ',' symref"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"{p[4]} = fileDict[{p[2]}].readline()")
+def p_read_file(p):
+    """read_file : READFILE file_id ',' symbol_reference"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"{p[4]} = fileDict[{p[2]}].readline()")
 
 
-def p_writefile(p):
-    """writefile : WRITEFILE fileid ',' boolexpr
-    | WRITEFILE fileid ',' expr
-    | WRITEFILE fileid ',' symref
-    | WRITEFILE fileid ',' datatypes"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"fileDict[{p[2]}].write(str({p[4]}) + '\\n')")
+def p_write_file(p):
+    """write_file : WRITEFILE file_id ',' boolean_expression
+    | WRITEFILE file_id ',' expression
+    | WRITEFILE file_id ',' symbol_reference
+    | WRITEFILE file_id ',' data_types"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"fileDict[{p[2]}].write(str({p[4]}) + '\\n')")
 
 
-def p_closefile(p):
-    """closefile : CLOSEFILE fileid"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"fileDict[{p[2]}].close()")
+def p_close_file(p):
+    """close_file : CLOSEFILE file_id"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"fileDict[{p[2]}].close()")
 
 
-def p_filemappings(p):
-    """filemodes : READ
+def p_file_mappings(p):
+    """file_modes : READ
                  | WRITE
                  | APPEND
-    fileid : STRINGTYPE
-           | symref"""
-    addTrace(inspect.stack()[0][3], p)
+    file_id : STRINGTYPE
+           | symbol_reference"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
@@ -634,28 +636,28 @@ def p_filemappings(p):
 
 # Input statements
 def p_input(p):
-    """input : INPUT symref"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"{p[2]} = input()")
+    """input : INPUT symbol_reference"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"{p[2]} = input()")
 
 
 # Output statements
 def p_output(p):
-    """output : OUTPUT outputtypes"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"print({p[2]})")
+    """output : OUTPUT output_types"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"print({p[2]})")
 
 
 def p_output_multi(p):
-    """output : OUTPUT outputmulti"""
-    addTrace(inspect.stack()[0][3], p)
-    addLine(f"print({p[2]}, sep='')")
+    """output : OUTPUT output_multiple"""
+    add_trace(inspect.stack()[0][3], p)
+    add_line(f"print({p[2]}, sep='')")
 
 
-def p_outputmulti(p):
-    """outputmulti : outputmulti ',' outputmulti
-    | outputtypes ',' outputtypes"""
-    addTrace(inspect.stack()[0][3], p)
+def p_output_multiple(p):
+    """output_multiple : output_multiple ',' output_multiple
+    | output_types ',' output_types"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}, {p[3]}"
 
 
@@ -664,14 +666,14 @@ def p_outputmulti(p):
 # Booleans Operations
 
 
-def p_boolexpr_operators_relational(p):
-    """boolexpr : boolexpr EQUALTO boolexpr
-    | boolexpr NOTEQUALTO boolexpr
-    | boolexpr GREATEQUAL boolexpr
-    | boolexpr LESSEQUAL boolexpr
-    | boolexpr GREAT boolexpr
-    | boolexpr LESS boolexpr"""
-    addTrace(inspect.stack()[0][3], p)
+def p_boolean_expression_operators__relational(p):
+    """boolean_expression : boolean_expression EQUALTO boolean_expression
+    | boolean_expression NOTEQUALTO boolean_expression
+    | boolean_expression GREATEQUAL boolean_expression
+    | boolean_expression LESSEQUAL boolean_expression
+    | boolean_expression GREAT boolean_expression
+    | boolean_expression LESS boolean_expression"""
+    add_trace(inspect.stack()[0][3], p)
     if p[2] == "=":
         operator = "=="
     elif p[2] == "<>":
@@ -681,38 +683,38 @@ def p_boolexpr_operators_relational(p):
     p[0] = f"{p[1]} {operator} {p[3]}"
 
 
-def p_boolexpr_operators_logical_and_or(p):
-    """boolexpr : boolexpr AND boolexpr
-    | boolexpr OR boolexpr"""
-    addTrace(inspect.stack()[0][3], p)
+def p_boolean_expression_operators__logical_and_or(p):
+    """boolean_expression : boolean_expression AND boolean_expression
+    | boolean_expression OR boolean_expression"""
+    add_trace(inspect.stack()[0][3], p)
     if p[2] == "AND":
         p[0] = f"{p[1]} and {p[3]}"
     elif p[2] == "OR":
         p[0] = f"{p[1]} or {p[3]}"
 
 
-def p_boolexpr_operators_logical_not_01(p):
-    """boolexpr : boolexpr NOT '(' boolexpr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_boolean_expression_operators__logical_not_01(p):
+    """boolean_expression : boolean_expression NOT '(' boolean_expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]} not ({p[4]})"
 
 
-def p_boolexpr_operators_logical_not_02(p):
-    """boolexpr : NOT '(' boolexpr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_boolean_expression_operators__logical_not_02(p):
+    """boolean_expression : NOT '(' boolean_expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"not ({p[3]})"
 
 
 # Arithmetic Operations
-def p_expr_operands(p):
-    """expr : expr '+' expr
-    | expr '-' expr
-    | expr '*' expr
-    | expr '/' expr
-    | expr DIV expr
-    | expr MOD expr
-    | expr '&' expr"""
-    addTrace(inspect.stack()[0][3], p)
+def p_expression_operands(p):
+    """expression : expression '+' expression
+    | expression '-' expression
+    | expression '*' expression
+    | expression '/' expression
+    | expression DIV expression
+    | expression MOD expression
+    | expression '&' expression"""
+    add_trace(inspect.stack()[0][3], p)
     if p[2] == "DIV":
         operator = "//"
     elif p[2] == "MOD":
@@ -728,113 +730,113 @@ def p_expr_operands(p):
 
 
 # Boolean expression terms
-def p_boolexpr_terms(p):
-    """boolexpr : BOOLEANTYPE
-    | symref
+def p_boolean_expression__terms(p):
+    """boolean_expression : BOOLEANTYPE
+    | symbol_reference
     | BOOLEAN
-    | expr"""
-    addTrace(inspect.stack()[0][3], p)
+    | expression"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
 # Arithmetic expression terms
-def p_expr_terms(p):
-    """expr : symref
+def p_expression_terms(p):
+    """expression : symbol_reference
     | INTEGERTYPE
     | REALTYPE
-    | inlinecall"""
-    addTrace(inspect.stack()[0][3], p)
+    | inline_call"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
 # Output data type handling
-def p_outputtypes(p):
-    """outputtypes : boolexpr
-    | symref
-    | datatypes
-    | expr"""
-    addTrace(inspect.stack()[0][3], p)
+def p_output_types(p):
+    """output_types : boolean_expression
+    | symbol_reference
+    | data_types
+    | expression"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
 # Primitive data types
-def p_datatypes(p):
-    """datatypes : stringref
+def p_data_types(p):
+    """data_types : string_reference
     | CHARTYPE
     | DATETYPE"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
 # Data type names
-def p_typenames(p):
-    """typenames : DATE
+def p_type_names(p):
+    """type_names : DATE
     | REAL
     | INTEGER
     | CHAR
     | STRING
     | BOOLEAN"""
-    addTrace(inspect.stack()[0][3], p)
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
-# Braket support for expressions
-def p_expr_group(p):
-    """expr : '(' expr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+# Bracket support for expressions
+def p_expression_group(p):
+    """expression : '(' expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"({p[2]})"
 
 
-# Braket support for boolean expressions
-def p_boolexpr_group(p):
-    """boolexpr : '(' boolexpr ')'"""
-    addTrace(inspect.stack()[0][3], p)
+# Bracket support for boolean expressions
+def p_boolean_expression__group(p):
+    """boolean_expression : '(' boolean_expression ')'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"({p[2]})"
 
 
 # String handling
-def p_stringref_base(p):
-    """stringref : STRINGTYPE
-    | symref"""
-    addTrace(inspect.stack()[0][3], p)
+def p_string_reference__base(p):
+    """string_reference : STRINGTYPE
+    | symbol_reference"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
-def p_stringref_concat(p):
-    """stringref : stringref '&' stringref"""
-    addTrace(inspect.stack()[0][3], p)
+def p_string_reference__concat(p):
+    """string_reference : string_reference '&' string_reference"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}+{p[3]}"
 
 
 # Identifier resolution
-def p_symref(p):
-    """symref : ID
-    | arrayref"""
-    addTrace(inspect.stack()[0][3], p)
+def p_symbol_reference(p):
+    """symbol_reference : ID
+    | array_reference"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
-def p_arrayref_2D(p):
-    """arrayref : ID '[' expr ',' expr ']'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_array_reference__2d(p):
+    """array_reference : ID '[' expression ',' expression ']'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}[{p[3]} - 1][{p[5]} - 1]"
 
 
-def p_arrayref_1D(p):
-    """arrayref : ID '[' expr ']'"""
-    addTrace(inspect.stack()[0][3], p)
+def p_array_reference__1d(p):
+    """array_reference : ID '[' expression ']'"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}[{p[3]} - 1]"
 
 
 # Error handling
 def p_error(p):
-    addTrace(inspect.stack()[0][3], p)
-    if p == None:
+    add_trace(inspect.stack()[0][3], p)
+    if p is None:
         stackTrace[-1] += "(Blank line)"
-        addLine("")
+        add_line("")
     else:
         print(f"Syntax error in input! Token in context: {p}")
-        addLine(f"#=== ERROR PARSING {p} ===#")
+        add_line(f"#=== ERROR PARSING {p} ===#")
 
 
 # Build parser
@@ -854,4 +856,4 @@ def parse(text: str = "") -> tuple[list, list]:
     - tuple[`parseLines`, `stackTrace`]
     - `parseLines` (list): A list with transpiled python lines"""
     parser.parse(text)
-    return (parseLines, stackTrace)
+    return parseLines, stackTrace
