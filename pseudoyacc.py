@@ -335,13 +335,13 @@ def p_end_procedure(p):
     decrement_depth()
 
 
-def p_call_parameter_free(p):
+def p_call__parameter_free(p):
     """call : CALL ID"""
     add_trace(inspect.stack()[0][3], p)
     add_line(f"{p[2]}()")
 
 
-def p_call_parameter_inclusive(p):
+def p_call__parameter_inclusive(p):
     """call : CALL ID '(' parameter_feed ')'"""
     add_trace(inspect.stack()[0][3], p)
     add_line(f"{p[2]}({p[4]})")
@@ -383,7 +383,7 @@ def p_start_function__parameter_free(p):
     increment_depth()
 
 
-def p_start_function_parameter_inclusive(p):
+def p_start_function__parameter_inclusive(p):
     """start_function : FUNCTION ID '(' parameter_definition ')' RETURNS type_names"""
     add_trace(inspect.stack()[0][3], p)
     data_type = ""
@@ -421,7 +421,7 @@ def p_end_function(p):
     decrement_depth()
 
 
-def p_inline_call_builtin(p):
+def p_inline_call__builtin(p):
     """inline_call : builtin_functions"""
     add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
@@ -433,7 +433,7 @@ def p_inline_call__parameter_free(p):
     p[0] = f"{p[1]}()"
 
 
-def p_inline_call_parameter_inclusive(p):
+def p_inline_call__parameter_inclusive(p):
     """inline_call : ID '(' parameter_feed ')'"""
     add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}({p[3]})"
@@ -442,7 +442,7 @@ def p_inline_call_parameter_inclusive(p):
 # Parameter flow parsing
 
 
-def p_parameter_definition_recursion(p):
+def p_parameter_definition__recursion(p):
     """parameter_definition : parameter_definition ',' parameter_definition"""
     add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}, {p[3]}"
@@ -454,7 +454,7 @@ def p_parameter_definition__pass_by(p):
     p[0] = p[2]
 
 
-def p_parameter_definition_init(p):
+def p_parameter_definition__init(p):
     """parameter_definition : ID ':' type_names"""
     add_trace(inspect.stack()[0][3], p)
     data_type = ""
@@ -478,13 +478,13 @@ def p_parameter_definition_init(p):
     p[0] = f"{p[1]} : {data_type}"
 
 
-def p_parameter_feed_recursion(p):
+def p_parameter_feed__recursion(p):
     """parameter_feed : parameter_feed ',' parameter_feed"""
     add_trace(inspect.stack()[0][3], p)
     p[0] = f"{p[1]}, {p[3]}"
 
 
-def p_parameter_feed_init(p):
+def p_parameter_feed__init(p):
     """parameter_feed : expression
     | boolean_expression
     | symbol_reference
@@ -648,8 +648,8 @@ def p_output(p):
     add_line(f"print({p[2]})")
 
 
-def p_output_multi(p):
-    """output : OUTPUT output_multiple"""
+def p_output__multi(p):
+    """output : OUTPUT parameter_feed"""
     add_trace(inspect.stack()[0][3], p)
     add_line(f"print({p[2]}, sep='')")
 
@@ -706,7 +706,7 @@ def p_boolean_expression_operators__logical_not_02(p):
 
 
 # Arithmetic Operations
-def p_expression_operands(p):
+def p_expression__operands(p):
     """expression : expression '+' expression
     | expression '-' expression
     | expression '*' expression
@@ -740,7 +740,7 @@ def p_boolean_expression__terms(p):
 
 
 # Arithmetic expression terms
-def p_expression_terms(p):
+def p_expression__terms(p):
     """expression : symbol_reference
     | INTEGERTYPE
     | REALTYPE
@@ -751,8 +751,8 @@ def p_expression_terms(p):
 
 # Output data type handling
 def p_output_types(p):
-    """output_types : boolean_expression
-    | symbol_reference
+    """output_types : symbol_reference
+    | boolean_expression
     | data_types
     | expression"""
     add_trace(inspect.stack()[0][3], p)
@@ -781,7 +781,7 @@ def p_type_names(p):
 
 
 # Bracket support for expressions
-def p_expression_group(p):
+def p_expression__group(p):
     """expression : '(' expression ')'"""
     add_trace(inspect.stack()[0][3], p)
     p[0] = f"({p[2]})"

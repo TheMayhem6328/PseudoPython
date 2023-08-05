@@ -31,7 +31,7 @@ def stack_trace():
     print("Stack Trace:")
     print("==============")
     for trace in parse[1]:
-        if trace in ["p_root[None]", "(Blank line)"]:
+        if trace in ["p_root[None]", "p_error(Blank line)"]:
             print("----LINE----")
         else:
             print(trace)

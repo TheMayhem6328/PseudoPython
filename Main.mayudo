@@ -25,5 +25,3 @@ FOR Row ←1 TO MaxRow
     Total ←Total + RowTotal
 NEXT Row
 OUTPUT "The grand total is ", Total
-
-DECLARE Arr : ARRAY[1:10, 1:5] OF INTEGER
