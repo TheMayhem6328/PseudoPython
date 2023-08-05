@@ -1,4 +1,8 @@
-# PseudoPython
+<p align="center">
+  <img src="icon.svg" alt="Markdown logo" width="200"/>
+</p>
+
+<h1 align="center">PseudoPython</h1>
 
 ## Introduction
 
@@ -118,7 +122,7 @@ So far, here's a checklist of what's complete and what's not:
   - [X] **5.6** || Numeric functions
     - [X] `INT(x : REAL) RETURNS INTEGER`
     - [X] `RAND(x : INTEGER) RETURNS REAL`
-- [ ] **6** || Selection
+- [X] **6** || Selection
   - [X] **6.1** || IF statements  
     Fortunately in pseudocode, for block-like logic, we have keywords
     more akin to opening and closing tags found in HTML. For example,
@@ -133,7 +137,7 @@ So far, here's a checklist of what's complete and what's not:
     - [X] IF
     - [X] ELSE
     - [X] ENDIF
-  - [ ] **6.2** || CASE statements
+  - [X] **6.2** || CASE statements
 - [X] **7** || Iteration (repetition)
   - [X] **7.1** || Count-controlled (FOR) loops
   - [X] **7.2** || Post-condition (REPEAT) loops
