@@ -32,6 +32,10 @@ reserved = [
     "THEN",
     "ELSE",
     "ENDIF",
+    # CASE Definition
+    "CASE",
+    "OTHERWISE",
+    "ENDCASE",
     # FOR Definition
     "FOR",
     "TO",
@@ -160,7 +164,7 @@ def t_CHARTYPE(t):
     return t
 
 
-# noinspection PyPep8Naming
+# noinspection PyPep8Naming,PySingleQuotedDocstring
 def t_STRINGTYPE(t):
     r"\"[^\"]*[\\\"]*\"" ""
     t.value = str(t.value)
@@ -190,7 +194,7 @@ def t_ID(t):
 
 # Track line numbers
 def t_newline(t):
-    r"""\n|\r|\r\n"""
+    r"""\n|\r|\r\n:"""
     t.lexer.lineno += len(t.value)
     # t.type = "NEWLINE"
     # return t

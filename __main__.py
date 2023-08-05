@@ -38,4 +38,4 @@ def stack_trace():
 
 
 # Uncomment below line to print out trace
-stack_trace()
+# stack_trace()

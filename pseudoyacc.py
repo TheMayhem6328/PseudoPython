@@ -3,13 +3,13 @@ from ply import lex, yacc
 import pseudotoken as tokenizer
 import inspect
 
-
 # Initialize necessary values
 tokens = tokenizer.tokens
 lexer = tokenizer.lexer
 stackTrace = []
 parseLines = []
 indentCount = 0
+case_statement = False
 
 
 # Define utility functions
@@ -44,7 +44,7 @@ def add_line_if_not_found(utility_line: str):
 # Starting rule
 def p_root(p):
     """root : comment
-    | if
+    | selection
     | loop
     | declare
     | subroutine
@@ -54,7 +54,6 @@ def p_root(p):
     | input
     | output"""
     add_trace(inspect.stack()[0][3], p)
-    p[0] = p[1]
 
 
 # == Miscellaneous
@@ -69,15 +68,21 @@ def p_comment(p):
 
 # == Conditional selection
 
+def p_selection(p):
+    """selection : if
+    | case"""
+    add_trace(inspect.stack()[0][3], p)
+    p[0] = p[1]
+
 
 # If...else...endif statements
-
 
 def p_if(p):
     """if : if_start
     | then
     | else
     | end_if"""
+    add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
 
@@ -106,6 +111,70 @@ def p_end_if(p):
     """end_if : ENDIF"""
     add_trace(inspect.stack()[0][3], p)
     decrement_depth()
+
+
+# Case statements
+
+
+def p_case(p):
+    """case : case_start
+    | case_statement
+    | case_otherwise
+    | case_end"""
+    add_trace(inspect.stack()[0][3], p)
+    p[0] = p[1]
+
+
+def p_case_start(p):
+    """case_start : CASE OF symbol_reference"""
+    add_trace(inspect.stack()[0][3], p)
+    global case_statement
+    case_statement = True
+    add_line(f"match {p[3]}")
+    increment_depth()
+
+
+def p_case_statement(p):
+    """case_statement : data_types ':' case_known_statements"""
+    add_trace(inspect.stack()[0][3], p)
+    cond = str(parseLines.pop(-1)).removeprefix("    ")
+    add_line(f"case {p[1]} :")
+    increment_depth()
+    add_line(cond)
+    decrement_depth()
+    p[0] = p[1]
+
+
+def p_case_conditional(p):
+    """case_conditional : data_types"""
+    add_trace(inspect.stack()[0][3], p)
+    p[0] = p[1]
+
+
+def p_case_otherwise(p):
+    """case_otherwise : OTHERWISE ':' case_known_statements"""
+    add_trace(inspect.stack()[0][3], p)
+    cond = str(parseLines.pop(-1)).removeprefix("    ")
+    add_line(f"case _ :")
+    increment_depth()
+    add_line(cond)
+    decrement_depth()
+
+
+def p_case_end(p):
+    """case_end : ENDCASE"""
+    add_trace(inspect.stack()[0][3], p)
+    decrement_depth()
+    p[0] = p[1]
+
+
+def p_case_known_statements(p):
+    """case_known_statements : assign
+    | procedure
+    | output
+    | file_operations"""
+    add_trace(inspect.stack()[0][3], p)
+    p[0] = p[1]
 
 
 # == Loops
@@ -313,6 +382,7 @@ def p_procedure(p):
     | end_procedure
     | call"""
     add_trace(inspect.stack()[0][3], p)
+    p[0] = p[1]
 
 
 def p_start_procedure__parameter_free(p):
@@ -339,12 +409,14 @@ def p_call__parameter_free(p):
     """call : CALL ID"""
     add_trace(inspect.stack()[0][3], p)
     add_line(f"{p[2]}()")
+    p[0] = f"{p[2]}()"
 
 
 def p_call__parameter_inclusive(p):
     """call : CALL ID '(' parameter_feed ')'"""
     add_trace(inspect.stack()[0][3], p)
     add_line(f"{p[2]}({p[4]})")
+    p[0] = f"{p[2]}()"
 
 
 # Functions
@@ -654,13 +726,6 @@ def p_output__multi(p):
     add_line(f"print({p[2]}, sep='')")
 
 
-def p_output_multiple(p):
-    """output_multiple : output_multiple ',' output_multiple
-    | output_types ',' output_types"""
-    add_trace(inspect.stack()[0][3], p)
-    p[0] = f"{p[1]}, {p[3]}"
-
-
 # == Operand parsing
 
 # Booleans Operations
@@ -841,6 +906,7 @@ def p_error(p):
 
 # Build parser
 parser = yacc.yacc()
+
 
 # Function to parse given string
 
