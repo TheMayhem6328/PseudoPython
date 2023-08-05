@@ -212,6 +212,7 @@ lexer = lex.lex()
 
 # Tokenize
 def tokenize(input_text: str = "", filename: str = "") -> list[lex.LexToken]:
+    text = input_text
     if input_text == "" and filename != "":
         with open(filename, "r") as file:
             text = file.read()
