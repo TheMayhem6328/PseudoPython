@@ -8,9 +8,9 @@ for line in range(len(data)):
     data[line] = data[line].removesuffix("\n")
 
 print("\nTokens:\n==========")
-for line in range(len(data)):
-    print(f"Line {line + 1}:")
-    tokenList = list(tokenizer.tokenize(data[line]))
+for line_number, line in enumerate(data):
+    print(f"Line {line_number + 1}:")
+    tokenList = list(tokenizer.tokenize(line))
     for token in tokenList:
         print(token)
     print("")
@@ -38,4 +38,4 @@ def stack_trace():
 
 
 # Uncomment below line to print out trace
-# stack_trace()
+stack_trace()

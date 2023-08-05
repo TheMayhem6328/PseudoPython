@@ -135,7 +135,7 @@ def p_case_start(p):
 
 
 def p_case_statement(p):
-    """case_statement : data_types ':' case_known_statements"""
+    """case_statement : case_conditional ':' case_known_statements"""
     add_trace(inspect.stack()[0][3], p)
     cond = str(parseLines.pop(-1)).removeprefix("    ")
     add_line(f"case {p[1]} :")
@@ -155,7 +155,7 @@ def p_case_otherwise(p):
     """case_otherwise : OTHERWISE ':' case_known_statements"""
     add_trace(inspect.stack()[0][3], p)
     cond = str(parseLines.pop(-1)).removeprefix("    ")
-    add_line(f"case _ :")
+    add_line("case _ :")
     increment_depth()
     add_line(cond)
     decrement_depth()
@@ -172,7 +172,7 @@ def p_case_known_statements(p):
     """case_known_statements : assign
     | procedure
     | output
-    | file_operations"""
+    | file_operation"""
     add_trace(inspect.stack()[0][3], p)
     p[0] = p[1]
 
