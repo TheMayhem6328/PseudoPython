@@ -1,12 +1,12 @@
 # Import handling
-import ply.yacc as yacc
-import ply.lex as lex
-from pseudotoken import Tokenizer
+from ply import lex, yacc
+import pseudotoken as tokenizer
 import inspect
 
+
 # Initialize necessary values
-tokens = Tokenizer.tokens
-lexer = Tokenizer.lexer
+tokens = tokenizer.tokens
+lexer = tokenizer.lexer
 stackTrace = []
 parseLines = []
 indentCount = 0
