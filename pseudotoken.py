@@ -80,26 +80,26 @@ reserved = [
 # List of token names
 # In order of priority - highest ones first
 tokens = [
-             # Miscellaneous
-             "COMMENT",
-             "ASSIGN",
-             # Data Types
-             "DATETYPE",
-             "REALTYPE",
-             "INTEGERTYPE",
-             "CHARTYPE",
-             "STRINGTYPE",
-             "BOOLEANTYPE",
-             # Logical Operators
-             "EQUALTO",
-             "NOTEQUALTO",
-             "GREATEQUAL",
-             "LESSEQUAL",
-             "GREAT",
-             "LESS",
-             # Miscellaneous
-             "ID",
-         ] + reserved
+    # Miscellaneous
+    "COMMENT",
+    "ASSIGN",
+    # Data Types
+    "DATETYPE",
+    "REALTYPE",
+    "INTEGERTYPE",
+    "CHARTYPE",
+    "STRINGTYPE",
+    "BOOLEANTYPE",
+    # Logical Operators
+    "EQUALTO",
+    "NOTEQUALTO",
+    "GREATEQUAL",
+    "LESSEQUAL",
+    "GREAT",
+    "LESS",
+    # Miscellaneous
+    "ID",
+] + reserved
 
 # Literal handling
 literals = r"&+-*/(){}[],:."
@@ -162,7 +162,7 @@ def t_CHARTYPE(t):
 
 # noinspection PyPep8Naming
 def t_STRINGTYPE(t):
-    r"\"[^\"]*[\\\"]*\""""
+    r"\"[^\"]*[\\\"]*\"" ""
     t.value = str(t.value)
     return t
 
