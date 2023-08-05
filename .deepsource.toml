@@ -1,8 +1,6 @@
 version = 1
 
-exclude_patterns = [
-    "*/ply/**"
-]
+exclude_patterns = ["*/ply/**"]
 
 [[analyzers]]
 name = "python"
