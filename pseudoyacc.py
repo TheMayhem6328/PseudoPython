@@ -68,6 +68,7 @@ def p_comment(p):
 
 # == Conditional selection
 
+
 def p_selection(p):
     """selection : if
     | case"""
@@ -76,6 +77,7 @@ def p_selection(p):
 
 
 # If...else...endif statements
+
 
 def p_if(p):
     """if : if_start
